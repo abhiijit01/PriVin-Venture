@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "SaleReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Sale Report</div>
+                <div class="col-md-12 box bb">
+                    <table id="Demogrid"></table>
+                    <div id="pager"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        "use strict";
+        $("#Demogrid").jqGrid
+            ({
+                url: "/Outlet/Sale/GetAllSoldProducts",
+                datatype: 'json',
+                mtype: 'Get',
+                //table header name
+                colNames: ['Invoice No', 'Date', 'Barcode', 'Product', 'Category', 'Brand', 'Size','Unit Price','Quantity','Discount','Discounted Amount','GST','GST Amount','Final Price',' Payment Mode'],
+                colModel: [
+                    { name: "invoiceno", index: 'invoiceno', key: false, search: true },
+                    {
+                        name: 'purcdate', index: 'purcdate', width: 90, editable: true, editoptions: {
+                            size: 20,
+                            dataInit: function (el) {
+                                $(el).datepicker({ dateFormat: 'yy-mm-dd' });
+                            },
+
+                        },
+                        formatter: "date", formatoptions: { newformat: "Y-m-d" }
+                    },
+                    { name: "barcode", index: 'barcode', key: false, search: true },
+                    { name: "prodname", index: 'prodname', key: false, search: true },
+                    { name: "catname", index: 'catname', key: false, search: true },
+                    { name: "brandname", index: 'brandname', key: false, search: true },
+                    { name: "sizename", index: 'sizename', key: false, search: true },
+                    { name: "unitprice", search: false},
+                    { name: "qty", search: false},
+                    { name: "discountper", search: false },
+                    { name: "discountamount", search: false },
+                    { name: "gst", search: false },
+                    { name: "gstprice", search: false },
+                    { name: "finalprice", index: 'finalprice', key: false, search: true },
+                    { name: "paymentmode", index: 'paymentmode', key: false, search: true },
+                ],
+
+                rowNum: 10,
+                viewrecords: true,
+                sortorder: 'desc',
+                caption: 'Stocks Information',
+                emptyrecords: 'No records',
+                jsonReader:
+                {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    Id: "0"
+                },
+                autowidth: true,
+                multiselect: false,
+                pager: jQuery('#pager'),
+                rowList: [10, 20, 30, 40],
+                multiselectPosition: false
+            }).navGrid('#pager',
+                {
+                    add:false,
+                    edit: false,
+                    del: false,
+                    search: true,
+                    searchtext: "Search",
+                    refresh: true,
+                    refreshtext: "Refresh"
+                },
+                //Search option
+                {
+                    zIndex: 100,
+                    caption: "Search Product",
+                    sopt: ['cn'],
+                    closeOnEscape: true,
+                    closeAfterDelete: true,
+                    searchtext: "Search Product"
+                });
+        var dtaalength = $(".navtable tbody").find('td:eq(3)').attr("title");
+
+        if (dtaalength == undefined) {
+
+            $("#Demogrid").jqGrid('navButtonAdd', '#pager',
+                {
+
+                    caption: "ExportExcel", buttonicon: "ui-icon ui-icon-document", title: "Export to Excel",
+                    onClickButton: function (e) {
+                        exportDataToExcel(e, '#Demogrid');
+                    },
+                    position: "3"
+                });
+
+        }
+
+
+        function exportDataToExcel(e, id) {
+
+            var gridid = jQuery(id).getDataIDs();
+            var label = jQuery(id).getRowData(gridid[0]);
+            var selRowIds = jQuery(id).jqGrid('getRowData');
+
+            var obj = new Object();
+            obj.count = selRowIds.length;
+
+            if (obj.count) {
+                obj.items = new Array();
+                for (elem in selRowIds) {
+                    obj.items.push(jQuery(id).getRowData(gridid[elem]));
+                }
+                var json = JSON.stringify(obj);
+                JSONToCSVConvertor(json, "csv", 1);
+            }
+        }
+        function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+
+            //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+            var CSV = '';
+            //This condition will generate the Label/Header
+            if (ShowLabel) {
+                var row = "";
+
+                //This loop will extract the label from 1st index of on array
+                for (var index in arrData.items[0]) {
+                    //Now convert each value to string and comma-seprated
+                    row += index + ',';
+                }
+                row = row.slice(0, -1);
+                //append Label row with line break
+                CSV += row + '\r\n';
+            }
+
+            //1st loop is to extract each row
+            for (var i = 0; i < arrData.items.length; i++) {
+                var row = "";
+                //2nd loop will extract each column and convert it in string comma-seprated
+                for (var index in arrData.items[i]) {
+                    row += '"' + arrData.items[i][index].replace(/(<([^>]+)>)/ig, '') + '",';
+                }
+                row.slice(0, row.length - 1);
+                //add a line break after each row
+                CSV += row + '\r\n';
+            }
+
+            if (CSV == '') {
+                alert("Invalid data");
+                return;
+            }
+
+            var link = document.createElement("a");
+            link.id = "lnkDwnldLnk";
+
+            //this part will append the anchor tag and remove it after automatic click
+            document.body.appendChild(link);
+
+            var csv = CSV;
+            blob = new Blob([csv], { type: 'text/csv' });
+
+            var myURL = window.URL || window.webkitURL;
+
+            var csvUrl = myURL.createObjectURL(blob);
+            var filename = 'ReportDailyCollection.csv';
+            jQuery("#lnkDwnldLnk")
+                .attr({
+                    'download': filename,
+                    'href': csvUrl
+                });
+
+            jQuery('#lnkDwnldLnk')[0].click();
+            document.body.removeChild(link);
+
+        }
+    });
+    //validation for Dept code input field
+    var catnameCheck = function (value, catname) {
+        if (/^[a-zA-Z ]*$/.test(value)) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + catname + "' column."]
+        }
+    };
+    //$(document).ready(function () {
+    //   $("#row_with_row_id","#mygrid").css({display:"none"});
+    //});
+</script>
+
+
+
+
+

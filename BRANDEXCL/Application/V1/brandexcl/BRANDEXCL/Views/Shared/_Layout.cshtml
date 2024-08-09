@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>SALES MANAGEMENT SYSTEM</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="~/css/main.css">
+    <link rel="stylesheet" type="text/css" href="~/css/style.css">
+    <!-- Font-icon css-->
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />   
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet" />
+    @*for canvas charts*@
+    <script src="~/js/canvasjs.min.js"></script>
+    <!-- Essential javascripts for application to work-->
+    <script src="~/js/popt.js"></script>
+    <script src="~/js/bt.js"></script>
+    @*<script src="~/js/jquery-3.2.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>*@
+    <script src="~/scripts/jquery-ui-1.10.0.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/scripts/i18n/grid.locale-en.js"></script>
+    <script src="~/scripts/jquery.jqGrid.min.js"></script>
+    <style>
+    .imgprff
+    {
+        width:30px !important;
+        height: 30px !important;
+        border-radius:50% !important;
+    }
+        </style>
+</head>
+<body>
+    <div class="app sidebar-mini rtl">
+        <header class="app-header">
+            <a class="app-header__logo" href="/Admin/Home/Index">
+                <img src="~/Images/tbd.png" class="img-responsive boynikaimg" style="height:65px" /></a>
+            <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
+            <h4 class="hidden-xs" style="color: #fff;
+    text-align: center;
+    margin-top: 16px;
+    ">SALES MANAGEMENT SYSTEM</h4>
+
+
+            <!-- Navbar Right Menu-->
+            <ul class="app-nav">
+                <!-- User Menu-->
+                <span id="lbl_username" class="hidden-xs" style="font-size: 16px;color: white;font-family: verdana;margin: 14px 0px;"></span>
+
+                  <li class="dropdown">
+                    <a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><img src="" id="imgProfile" class="imgprff" /></a>
+                    <ul class="dropdown-menu settings-menu dropdown-menu-right">
+                        <li><a class="dropdown-item" href="/User/NewUser/Myprofile" onclick="myprofile()"><i class="fa fa-user fa-lg"></i>My Profile</a></li>
+                        <li><a class="dropdown-item" href="/User/NewUser/ChangePassword"><i class="fa fa-key fa-lg"></i> Change Password</a></li>
+                        <li><a class="dropdown-item"href="@Url.Action("logout", "home", new { Area = "Admin"}) "><i class="fa fa-sign-out fa-lg"></i> Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </header>
+
+
+        @Html.Partial("_PartialMenuView")
+        <div class="app-content">
+
+            @RenderBody()
+            @RenderSection("scripts", required: false)
+        </div>
+        <footer>
+            <p>Designed & Developed By Smartmee Technology</p>
+        </footer>
+    </div>
+</body>
+</html>
+@if (Session["userid"] != null)
+{
+
+}
+else
+{
+    <script>
+        window.location.href = "/admin/login/index";
+    </script>
+}
+<script>
+    @*function gotologin() {
+        
+        var datasession = '@Session["LoggedInUser"].ToString()';
+        if (datasession != null) {
+            datasession = null;
+            window.location.href = "/Admin/login/Index";
+
+        }
+
+    }*@
+    function myprofile()
+    {
+        window.location.href = "/"
+    }
+
+
+    $(document).ready(function () {
+        $(function () {
+            $.ajax({
+                    type: "GET",
+                    url: "/User/NewUser/getUserDetailsByLoggedInUser",
+                    data: '{}',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                    $("#lbl_username").text(response[0].Name);
+                    if (response[0].image != "") {
+                        $("#imgProfile").attr('src', response[0].image);
+                    }
+                    else {
+                        $("#imgProfile").attr('src', "http://placehold.it/150x150");
+                    }
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        })
+
+    });
+</script>
+

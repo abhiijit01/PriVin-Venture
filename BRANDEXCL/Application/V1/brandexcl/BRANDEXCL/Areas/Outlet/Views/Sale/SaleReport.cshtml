@@ -1,0 +1,138 @@
+﻿
+@{
+    ViewBag.Title = "SaleReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Sale Report</div>
+                <div class="col-md-12 box bb">
+                    <table id="Demogrid"></table>
+                    <div id="pager"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+        "use strict";
+        $("#Demogrid").jqGrid
+            ({
+                url: "/Outlet/Sale/GetAllSoldProducts",
+                datatype: 'json',
+                mtype: 'Get',
+                //table header name
+                colNames: ['Invoice No','Mobile No', 'Date', 'Barcode', 'Product', 'Category', 'Brand', 'Size', 'MRP', 'Quantity', 'Discount', 'Discounted Amount', 'GST', 'GST Amount', 'Final Price', 'Payment Mode', 'Coupon Offered', 'Comment'],
+                colModel: [
+                    { name: "invoiceno", index: 'invoiceno', key: false, search: true },
+                    { name: "mobileno", index: 'mobileno', key: false, search: true },
+                    {
+                        name: 'purcdate', index: 'purcdate', width: 90, editable: true, editoptions: {
+                            size: 20,
+                            dataInit: function (el) {
+                                $(el).datepicker({ dateFormat: 'yy-mm-dd' });
+                            },
+
+                        },
+                        formatter: "date", formatoptions: { newformat: "Y-m-d" }
+                    },
+                    { name: "barcode", index: 'barcode', key: false, search: true },
+                    { name: "prodname", index: 'prodname', key: false, search: true },
+                    { name: "catname", index: 'catname', key: false, search: true },
+                    { name: "brandname", index: 'brandname', key: false, search: true },
+                    { name: "sizename", index: 'sizename', key: false, search: true },
+                    { name: "unitprice", search: false},
+                    { name: "qty", search: false},
+                    { name: "discountper", search: false },
+                    { name: "discountamount", search: false },
+                    { name: "gst", search: false },
+                    { name: "gstprice", search: false },
+                    { name: "finalprice", index: 'finalprice', key: false, search: true },
+                    { name: "paymentmode", index: 'paymentmode', key: false, search: true },
+                    { name: "CouponOffered", index: 'CouponOffered', key: false, search: true },
+                    { name: "comment", index: 'comment', key: false, search: true },
+                ],
+
+                rowNum: 30,
+                viewrecords: true,
+                sortorder: 'desc',
+                caption: 'Stocks Information',
+                emptyrecords: 'No records',
+                jsonReader:
+                {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    Id: "0"
+                },
+                autowidth: true,
+                multiselect: false,
+                pager: jQuery('#pager'),
+                rowList: [10, 20, 30, 40],
+                multiselectPosition: false
+            }).navGrid('#pager',
+                {
+                    add:false,
+                    edit: false,
+                    del: false,
+                    search: true,
+                    searchtext: "Search",
+                    refresh: true,
+                    refreshtext: "Refresh"
+                },
+                //Search option
+                {
+                    zIndex: 100,
+                    caption: "Search Product",
+                    sopt: ['cn'],
+                    closeOnEscape: true,
+                    closeAfterDelete: true,
+                    searchtext: "Search Product"
+                });
+        var dtaalength = $(".navtable tbody").find('td:eq(3)').attr("title");
+
+        if (dtaalength == undefined) {
+
+            $("#Demogrid").jqGrid('navButtonAdd', '#pager',
+                {
+
+                    caption: "ExportExcel", buttonicon: "ui-icon ui-icon-document", title: "Export to Excel",
+                    onClickButton: function (e) {
+                        exportDataToExcel(e, '#Demogrid');
+                    },
+                    position: "3"
+                });
+
+        }
+
+
+        function exportDataToExcel(e, id) {
+            location.href = "/Outlet/Sale/ExportSalesReport";
+        }
+    });
+    //validation for Dept code input field
+    var catnameCheck = function (value, catname) {
+        if (/^[a-zA-Z ]*$/.test(value)) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + catname + "' column."]
+        }
+    };
+    //$(document).ready(function () {
+    //   $("#row_with_row_id","#mygrid").css({display:"none"});
+    //});
+</script>
+
+
+
+
+

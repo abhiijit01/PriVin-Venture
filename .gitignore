@@ -1,0 +1,23 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BRANDEXCL/Application/V1/brandexcl/.vs/BRANDEXCL
+/BRANDEXCL/Application/V1/brandexcl/BLL/obj
+/BRANDEXCL/Application/V1/brandexcl/BLL/bin/Debug
+/BRANDEXCL/Application/V1/brandexcl/BOL/obj
+/BRANDEXCL/Application/V1/brandexcl/BOL/bin
+/BRANDEXCL/Application/V1/brandexcl/BRANDEXCL/obj
+/BRANDEXCL/Application/V1/brandexcl/BRANDEXCL/bin
+/BRANDEXCL/Application/V1/brandexcl/DAL/obj
+/BRANDEXCL/Application/V1/brandexcl/DAL/bin/Debug
+/BRANDEXCL/Application/V2/BRANDEXCL/.vs/BRANDEXCL
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL/obj
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL/bin/Debug/net6.0
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.Business/obj
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.Business/bin/Debug/net6.0
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.DataAccess/obj
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.DataAccess/bin/Debug/net6.0
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.Model/obj
+/BRANDEXCL/Application/V2/BRANDEXCL/BRANDEXCL.Model/bin/Debug/net6.0
+/BRANDEXCL/Application/V1/brandexcl_BAK

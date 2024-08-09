@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewBag.Title = "CreateDesignation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .main {
+        border: 1px solid gray;
+        width: 500px;
+        height: 200px;
+        margin-top: 100px;
+        margin-left: 350px;
+    }
+
+    .header {
+        background-color: dodgerblue;
+        height: 30px;
+        margin-bottom: 26px;
+    }
+
+    .header_text {
+        margin-left: 96px;
+        color: white;
+        font-size: 20px;
+    }
+
+    .newdesg {
+        color: white;
+        background-color: dodgerblue;
+        border: none;
+        cursor: pointer;
+        height: 30px;
+        position: absolute;
+        margin-top: 36px;
+        margin-left: 100px;
+    }
+
+    .error {
+        color: red;
+        border: 1px solid red;
+        position: absolute;
+        margin-left: 6px;
+        height: 25px;
+    }
+</style>
+
+<div class="main">
+    <div class="header">
+        <span class="header_text"></span>
+    </div>
+    <div style="margin-left:30px;">
+        <input type="hidden" id="hdndesgid" value="" />
+        <table>
+            <tr>
+                <td>Designation Name:</td>
+                <td>
+                    <input type="text" id="desgname" value="" required />
+                </td>
+            </tr>
+            <tr style="height:15px;"></tr>
+            <tr>
+                <td>Designation Code:</td>
+                <td><input type="text" id="desgcode" value="" required /></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <input type="button" id="desgadd" value="Add Designation" class="newdesg" />
+                    <input type="button" id="updatedesg" value="Update Designation" class="newdesg" style="display:none" />
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        var url = window.location.href;
+        var value = url.substring(url.lastIndexOf('/') + 1);
+        if (value == "CreateDesignation") {
+            $("#updatedesg").css("display", "none");
+            $(".header_text").text("Create New Designation");
+            $("#desgadd").css("display", "block");
+
+        }
+        else {
+            $("#updatedesg").css("display", "block");
+            $(".header_text").text("Update Designation");
+            getalldata();
+            $("#desgadd").css("display", "none");
+
+        }
+        $("#desgadd").click(function () {
+
+
+            var daaatadesig = validateDesg();
+            if (daaatadesig != 1) {
+                return false;
+            }
+            if (daaatadesig == undefined) {
+                return false;
+            }
+            else {
+                var DesgModel = {
+                    Designation_Name: $("#desgname").val(),
+                    Desg_Code: $("#desgcode").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    URL: "/User/Designation/CreateDesignation",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({ theDesgn: DesgModel }),
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+
+                    success: function (response) {
+                        alert("Record Added Sucessfully.");
+                        window.location.href = "/User/Designation/ViewDesignation";
+                    }
+                });
+            }
+
+        });
+
+        $("#updatedesg").click(function () {
+
+
+            var daaatadesig = validateDesg();
+            if (daaatadesig != 1) {
+                return false;
+            }
+            if (daaatadesig == undefined) {
+                return false;
+            }
+            else {
+                var DesgModel = {
+                    Desg_ID: $('#hdndesgid').val(),
+                    Designation_Name: $("#desgname").val(),
+                    Desg_Code: $("#desgcode").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    URL: "/User/Designation/CreateDesignation",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({ theDesgn: DesgModel }),
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+
+                    success: function (response) {
+                        alert("Record Added Sucessfully.");
+                        window.location.href = "/User/Designation/ViewDesignation";
+
+                    }
+                });
+            }
+
+        });
+
+    });
+
+    function validateDesg() {
+
+        var nameReg = /^[A-Za-z\s]+$/;
+        var numberReg = /^[A-Za-z0-9]+$/;
+        var names = $('#desgname').val();
+        var codes = $('#desgcode').val();
+
+        $('.error').hide();
+
+        if (names == "" || codes == "") {
+            if (names == "") {
+                $('#desgname').after('<span class="error"> Please enter your Designation Name</span>');
+            }
+            if (codes == "") {
+                $('#desgcode').after('<span class="error"> Please enter your Designation Code</span>');
+            }
+        }
+
+        else if (!nameReg.test(names) || !numberReg.test(codes)) {
+            if (!nameReg.test(names)) {
+                $('#desgname').after('<span class="error"> Letters only</span>');
+            }
+            if (!numberReg.test(codes)) {
+                $('#desgcode').after('<span class="error"> Numbers only</span>');
+            }
+        }
+        else if (names.length <= 5) {
+            $('#desgname').after('<span class="error"> Minimum 5 leters required</span>');
+        }
+        else {
+            return 1;
+        }
+    }
+    function getalldata() {
+
+        var url = window.location.href;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        $.ajax({
+            type: 'GET',
+            url: '/User/Designation/PopulateFormField',
+            data: { Desg_ID: id },
+            dataType: 'json',
+            success: function (data) {
+                $('#desgname').val(data[0].Designation_Name);
+                $('#desgcode').val(data[0].Desg_Code);
+                $('#hdndesgid').val(data[0].Desg_ID);
+            }
+        });
+    }
+</script>

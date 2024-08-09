@@ -1,0 +1,100 @@
+﻿
+<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+<aside class="app-sidebar">
+    <ul class="app-menu" id="menu"></ul>
+</aside>
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        var treeviewMenu = $('.app-menu');
+        // Toggle Sidebar
+        $('[data-toggle="sidebar"]').click(function (event) {
+            event.preventDefault();
+            $('.app').toggleClass('sidenav-toggled');
+        });
+        // Set initial active toggle
+        $("[data-toggle='treeview']").parent().toggleClass('is-expanded');
+        //Activate bootstrip tooltips
+        //$("[data-toggle='tooltip']").tooltip();
+
+        //load data in form
+        $(function () {
+            
+            $.ajax({
+                type: 'GET',
+                url: '/Admin/PagePermission/GetPagesListByRoleID',
+                data: {},
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (response)
+                {
+                    for (var i = 0; i < response.length; i++)
+                    {
+                        if (response[i].parentid == 0)
+                        {
+                            $('#menu').each(function ()
+                            {
+                                togledata();
+                                var textdata = response[i].distext;
+                                var data12 = response[i].pageid;
+                                var main_li = $('<li/>').attr('class', 'treeview').attr('id', ' '+response[i].pageid+'').appendTo(this);
+                                var spantag=
+                                $('<span />').attr('class', 'app-menu__item')
+                                    .attr('data-toggle', 'treeview')
+                                    .prepend("<i class='app-menu__icon fa fa-dashboard'></i><span class='app-menu__label'>" + textdata + '</span><i class="treeview-indicator fa fa-angle-right"></i>')
+                                    .appendTo(main_li);
+                                $('<ul />').attr('class', 'treeview-menu').attr('id', 'submenu' + response[i].pageid + '').appendTo(main_li);
+                                togledata();
+                                getdata(response, data12);
+                            });
+                        }
+                        else{}
+
+                    }
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+
+        });
+        function getdata(response, data12)
+        {
+            var data1 = data12;
+            var submenuid = 'submenu' + data1;
+            var subid = $('#' + submenuid);
+            for (var i = 0; i < response.length; i++) {
+                if (response[i].parentid == data1) {
+                    $('#' + submenuid).each(function () {
+                        var sub_li = $('<li/>').appendTo(this);
+                        var title = response[i].distext;
+                        var url = response[i].targeturl;
+                        $('<a />').text(title).attr('href', url).attr('class', 'treeview-item').prepend('<i class="icon fa fa-circle-o"></i>').appendTo(sub_li);
+                    })
+
+                }
+                else { }
+
+            }
+        }
+        function togledata() {
+            var treeviewMenu = $('.app-menu');
+            $("[data-toggle='treeview']").click(function () {
+                
+                if (!$(this).parent().hasClass('is-expanded')) {
+                    treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
+                }
+                $(this).parent().toggleClass('is-expanded');
+            });
+        }
+
+    })
+
+
+
+</script>
+
+

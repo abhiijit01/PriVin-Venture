@@ -1,0 +1,79 @@
+﻿.demo{ background: #ECECEC; }
+.counter{
+    font-family: 'Secular One', sans-serif;
+    text-align: center;
+    width: 81%;
+    padding: 25px 5px 30px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+.counter:before{
+   content: '';
+    background:#7a8d96;
+    height: 100%;
+    width: 100%;
+    border-radius: 15px;
+    transform: translateX(-50%) translateY(-50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: -1;
+}
+.counter h3{
+    color: #fff;
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0 20px;
+    margin: 0 0 15px 0;
+}
+.counter .counter-content{
+    background: #fff;
+    padding: 10px 10px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    width: 81%;
+}
+}
+.counter-content:before,
+.counter-content:after{
+    content: "";
+    background: linear-gradient(to right bottom, transparent 49%, #888 50%);
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    z-index:-2;
+}
+.counter-content:after{
+    background: linear-gradient(to right bottom,#888 49%, transparent 50%);
+    left: auto;
+    right: -2px;
+    top: auto;
+    bottom: -20px;
+}
+.counter .counter-icon{
+    color: #EB3B00;
+    font-size: 35px;
+    transition: all 0.3s;
+}
+.counter:hover .counter-icon{ transform: rotateY(360deg); }
+.counter .counter-value{
+    color: #333;
+    font-size: 35px;
+    font-weight: 600;
+}
+/*.counter.blue:before{ background: linear-gradient(135deg,#00DCD0,#00B5DC); }*/
+.counter.blue .counter-icon{ color: #00B5DC; }
+.counter.yellow:before{ background-image: linear-gradient(to right, #3cb2d4, #34acd1, #2ca7cd, #24a1ca, #1a9cc6); }
+.counter.yellow .counter-icon{ color: #FFA105; }
+.counter.darkblue:before{ background: linear-gradient(135deg,#0081DC,#0072D7); }
+.counter.darkblue .counter-icon{ color: #0072D7; }
+@media screen and (max-width:990px){
+    .counter{ margin-bottom: 40px; }
+}

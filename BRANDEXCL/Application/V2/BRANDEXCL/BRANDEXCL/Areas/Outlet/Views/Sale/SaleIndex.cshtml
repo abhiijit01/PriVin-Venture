@@ -1,0 +1,710 @@
+﻿
+@{
+    ViewBag.Title = "SaleIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/popt.js"></script>
+<script src="~/js/bt.js"></script>
+<link href="~/css/SaleStyle.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-12 ">
+            <input type="hidden" id="txt_Exchinvoice" value="" />
+            <input type="hidden" id="txt_Custmcode" value="" />
+            <input type="hidden" id="txt_Finalprice" value="0" />
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Sale </div>
+                @*<input type="button" value="Sync Data to Server" class="btn btn-outline-success" onclick="SyncData()" style="float:right" />*@
+                <div class="col-lg-12 box bb">
+                    <input type="hidden" id="hf_pageid" value="" />
+                    <div class="row hd_titl mtbm" style="border-bottom: 1px solid #e5e5e5;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12 col-xs-12">
+                                    <span>Store Name:</span>
+                                    <span id="lbl_Outletname" style="color:deeppink;"></span>
+                                </div>
+                                <div class="col-lg-6 col-sm-12 col-xs-12"></div>
+                                <div class="col-lg-2 col-sm-12 col-xs-12">
+                                    <span>Code:</span>
+                                    <span id="lbl_Outletcode" style="color:deeppink"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 box bb">
+                    <input type="hidden" id="hf_pageid" value="" />
+                    <div class="row hd_titl mtbm" style="border-bottom: 1px solid #e5e5e5;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>Mobile:</span>
+                                </div>
+                                <div class="col-lg-2 col-sm-12 col-xs-12">
+                                    <input type="text" onchange="GetCCodeCMob()" autocomplete="off" class="ks" id="txt_Mobileno" value="" />
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>Email:</span>
+                                </div>
+                                <div class="col-lg-3 col-sm-12 col-xs-12">
+                                    <input type="text" autocomplete="off" class="ks" id="txt_Email" value="" />
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>Name:</span>
+                                </div>
+                                <div class="col-lg-2 col-sm-12 col-xs-12">
+                                    <input type="text" class="ks" id="txt_Custname" value="" />
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12" id="custmdiv" style="display:none;">
+                                    <span style="color:blueviolet">Exchange:</span>
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12" id="custmdiv" style="display:none;">
+                                    <input type="checkbox" id="chk_Exchange" value="" />
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12" id="custmdiv" style="display:none;">
+                                    <span>C code:</span>
+                                </div>
+                                <div class="col-lg-3 col-sm-12 col-xs-12" id="custmdiv" style="display:none;">
+                                    <input type="text" class="ks" id="txt_Custmcode" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-yellow">
+                    <div class="col-lg-12 col-xs-12 col-sm-12 formbox">
+                        <div class="row">
+                            <div class="col-lg-1 col-sm-12 col-xs-12">
+                                <span>Barcode:</span>
+                            </div>
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                                @*<input type="text"  class="ks" id="txt_invoiceno" value="" />*@
+                                <input type="text" autocomplete="off" id="txt_Barcode" class="bar" name="barcode" value="" />
+                            </div>
+                            @*<div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>Size:</span>
+                                </div>*@
+                            <!--<div class="col-lg-3 col-sm-12 col-xs-12">-->
+                            @*<input type="text"  class="ks" id="txt_invoiceno" value="" />*@
+                            <!--<select required id="ddl_Size" class="bar"></select>
+                            </div>-->
+                            <div id="div_Exchange" class="col-lg-4 col-sm-12 col-xs-12" style="display:none;">
+                                <input type="text" autocomplete="off" style="width:300px; display:inline-block; border:transparent" name="search1" class="tag_input1 ks" id="txt_Exchno" list="json-datalist1" placeholder="Exchange invoice" />
+                                <datalist id="json-datalist1"></datalist>
+                            </div>
+                            <div id="div_ExchangePrice" class="col-lg-2 col-sm-12 col-xs-12" style="display:none;">
+                                <span>Pending Price:</span>
+                                <span id="lbl_Exchprice" style="color:deeppink"></span>
+                            </div>
+                        </div>
+                        <label id="lbl_msg"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                        <div style="overflow-x:auto;margin-top:15px">
+                            <table id="tbl_Sale" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr style="background:#48839e;font-size:12px;color:white">
+                                        <th>Barcode</th>
+                                        <th>Product Code</th>
+                                        <th>Product Name</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Size</th>
+                                        <th>Price(Excluding GST)</th>
+                                        <th>GST(%)</th>
+                                        <th>GST Amount</th>
+                                        <th>Price(Including GST)</th>
+                                        <th>Quantity</th>
+                                        <th>Discount(%)</th>
+                                        <th>Discounted Amount</th>
+                                        <th>Final Price</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                        <div style="overflow-x:auto;margin-top:15px">
+                            <table>
+                                <tr>
+                                    <td class="tbl_bg">
+                                        <div class="col-lg-10 col-sm-12 col-xs-12">
+                                            <label for="total"><b class="t_txt">Payment Mode:</b></label>
+                                            <select id="ddl_Paymode" name="cars">
+                                                <option value="">Select</option>
+                                                <option value="Cash">Cash</option>
+                                                <option value="Debit Card">Debit Card</option>
+                                                <option value="Credit Card">Credit Card</option>
+                                                <option value="Credit Card">UPI</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-2 col-sm-12 col-xs-12">
+                                            <span class="text-white">Grand Total:</span>
+                                            <span id="lbl_GrandTotal" style="color:white">0</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:15px;">
+                    <div class="col-sm-12 col-lg-1 col-xs-12">
+                        <button type="button" hidden="hidden" class="btn btn-primary" data-toggle="modal" data-target="#myModalDiscount" id="btn_PopupDiscount">Print</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModalDiscount" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div id="discount">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-sm-12 col-xs-12">
+                                                    <span>Discount:</span>
+                                                </div>
+                                                <div class="col-lg-6 col-sm-12 col-xs-12">
+                                                    <select required id="ddl_Discount" class="form-control" style="height:30px">
+                                                        <option value="0">0</option>
+                                                        <option value="5">5</option>
+                                                        <option value="10">10</option>
+                                                        <option value="15">15</option>
+                                                        <option value="20">20</option>
+                                                        <option value="25">25</option>
+                                                        <option value="30">30</option>
+                                                        <option value="35">35</option>
+                                                        <option value="40">40</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:15px;">
+                    <div class="col-sm-12 col-lg-11 col-xs-12 "></div>
+                    <div class="col-sm-12 col-lg-1 col-xs-12">
+                        <button type="button" class="btn btn-primary" id="btn_Submit">Submit</button>
+                        <button type="button" hidden="hidden" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btn_Popup">Print</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div id="invoice-POS" style="box-shadow: 0 0 1in -0.25in rgb(0 0 0 / 50%); padding: 2mm; margin: 0 auto; width: 72mm; background: #FFF;">
+                                            <center style="border-bottom: 1px solid black;">
+                                                <div><img src="~/Images/kk.png" style=" height: 40px !important; width: 60px !important; background: url(/images/kk.png) no-repeat !important; background-size: 60px 60px !important; float: left;" /></div>
+                                                <div>
+                                                    <h2 style="font-weight: BRANDEXCL.Modeld; font-size: 39px; padding: 4px;">The Brand</h2>
+                                                </div><!--End Info-->
+                                            </center><!--End InvoiceTop-->
+
+                                            <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                                <p>Ward No - 10, Dolamandapsahi, Deogarh, Odisha, 768108, Phone No - +919880537374</p>
+                                                <p style="font-weight: BRANDEXCL.Modeld; font-size: 10px;"> GSTIN NO – <span>21AJNPN2581M2ZU</span></p>
+                                                <p style="font-weight: BRANDEXCL.Modeld; font-size: 10px;">INVOICE NO - <span id="pntBillno"></span></p>
+                                                <p style="font-weight: BRANDEXCL.Modeld; font-size: 10px;">INVOICE DATE TIME - <span id="pntDatetime"></span></p>
+                                            </div><!--End Invoice Mid-->
+
+                                            <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+
+                                                <div id="table">
+                                                    <table id="tbl_PrintSale">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Item</th>
+                                                                <th>Qty</th>
+                                                                <th>MRP</th>
+                                                                <th>Dis(%)</th>
+                                                                <th>Price</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+
+                                                </div><!--End Table-->
+                                                <br />
+                                                <br />
+                                            </div>
+                                            <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                                <p style="font-size: 10px;"> TOT Items : <span id="pntTotalqty">0</span></p>
+                                                <p style="font-size: 10px;"> MRP Value : <span id="pntTotalunitprice">0</span></p>
+                                                <p style="font-size: 10px;"> Grand Total : <span id="pntGrandTotal">0</span></p>
+                                                <p style="font-size: 10px;"> Payment Mode : <span id="pntPaymode"></span></p>
+                                                <p style="font-weight: BRANDEXCL.Modeld; font-size: 12px;"><span style="font-weight: BRANDEXCL.Modeld; font-size: 12px;" id="lbl_GrandTotalTextBill"></span></p>
+                                                <p style=" font-size: 14px; font-weight: BRANDEXCL.Modeld;"> You Saved : <span id="pntDiscountedamount">0</span></p>
+                                            </div>
+                                            <div style="margin-top: 7px; ">
+                                                <center>
+                                                    <p style="font-weight: BRANDEXCL.Modeld;">** THANKS FOR SHOPPING **</p>
+                                                </center>
+                                                <center>
+                                                    <p style="font-weight: BRANDEXCL.Modeld;font-size: 10px;">EXCHANGE WITHIN 7DAYS WITH ORIGINAL MRP TAG, NO CASH REFUND</p>
+                                                </center>
+                                                <center>
+                                                    <p style="font-weight: BRANDEXCL.Modeld;text-decoration: underline;font-size: 11px;">EXCHANGE POLICY</p>
+                                                </center>
+                                                <p style="font-size: 10px;word-wrap: break-word;"> In case you are not satisfied with your purchase , you can exchange any merchandise bought from our stores within 7 days from the original date of purchase, provided article(s) being returned for exchange is unused, clean and in their original state and packaging. </p>
+                                                <center>
+                                                    <p style="font-weight: BRANDEXCL.Modeld;text-decoration: underline;font-size: 11px;">GENERAL TERMS &amp; CONDITION FOR EXCHANGE</p>
+                                                </center>
+                                                <p style="font-size: 10px;word-wrap: break-word;">*All Articles being returned will be eligible for exchange only if it is accompanied by a valid Invoice.</p>
+                                                <p style="font-size: 10px;word-wrap: break-word;">*No Exchange of articles purchased on discount or on sale period.</p>
+                                                <p style="font-size: 10px;word-wrap: break-word;">*No exchange would be entertained without return of the source article to our store</p>
+                                            </div>
+                                            <!--End InvoiceBot-->
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="button" id="btn_Print" value="Print" class="btn btn-info btnhide" onclick='printDiv();' />
+                                        @*<button type="button" id="btn_Close" class="btn btn-default btnhide" data-dismiss="modal">Close</button>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#div_Exchange").hide();
+        $("#div_ExchangePrice").hide();
+        $("#div_ExchangePrice").hide();
+        var d = new Date($.now());
+        $("#pntDatetime").text(d.getDate() + "-" + (d.getMonth() + 1) + "-" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+        $(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Outlet/OutletSelectByUserId",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#Outid').val(response[0].outid);
+                    $("#lbl_Outletname").text(response[0].outletname);
+                    $("#lbl_Outletcode").text(response[0].outcode)
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        //$(function () {
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Outlet/Size/ViewSizeDDL",
+        //        data: '{}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            $sizelist = $("#ddl_Size");
+        //            $sizelist.empty();
+        //            $sizelist.append('<option value="">Select</option>')
+        //            $.each(response, function (i, item) {
+        //                $sizelist.append('<option value="' + item["sizeid"] + '"> ' + item["descr"] + ' </option>');
+        //            });
+        //        },
+        //        failure: function (response) {
+        //            alert(response);
+        //        },
+        //        error: function (response) {
+        //            alert(response);
+        //        }
+        //    });
+        //});
+        $('#txt_Barcode').focus();
+    });
+    $("#btn_Print").click(function () {
+
+        $("#tbl_Print").find("tr:gt(0)").remove();
+        location.reload();
+    });
+    $("#btn_Close").click(function () {
+        $("#tbl_Print").find("tr:gt(0)").remove();
+        location.reload();
+    });
+    $("#txt_Barcode").change(function () {
+        GetSaleDetailFromBarcode();
+    });
+    var res = null;
+    function GetSaleDetailFromBarcode() {
+        var bar = $("#txt_Barcode").val();
+        var size = $("#ddl_Size").val();
+        var rowCount = $('#tbl_Sale tr').length;
+        var tbl = $("#tbl_Sale tbody");
+        var row = tbl.find('tr');
+        var issamebarcodefound = 0;
+        tbl.find('tr').each(function (i) {
+            var $tds = $(this).find('td');
+            if (bar == $tds.eq(1).text()) {
+                issamebarcodefound = 1;
+            }
+        });
+        if (issamebarcodefound == 0) {
+            $.ajax(
+                {
+                    type: "POST",
+                    url: "/Outlet/ReceivedProduct/BarcodeSelectByBarcode",
+                    data: JSON.stringify({ barcode: bar, sizeid: size }),
+                    contentType: "Application/json,charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //Calculate price includi GST
+                        //GST Amount = (Original Cost x GST %) / 100
+                        //Net Price = Original Cost + GST Amount
+                        if (response.length > 0) {
+                            if (confirm("Do you want to add any discount on this product?.")) {
+                                $("#btn_PopupDiscount").click();
+                               res=response;
+                            }
+                            else {
+                                addRow(response);
+                                $("#ddl_Discount").val("0");
+                                $('#txt_Barcode').val("");
+                                $('#ddl_Size').val("");
+                                $('#txt_Barcode').focus();
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        alert(response)
+                    },
+                    error: function (response) {
+                        alert(response)
+                    }
+                });
+        }
+        else {
+            alert("Barcode already searched!");
+        }
+    }
+    $("#ddl_Discount").change(function () {
+        if ($("#ddl_Discount").val() != "0") {
+            addRow(res);
+            $("#ddl_Discount").val("0");
+            $('#txt_Barcode').val("");
+            $('#ddl_Size').val("");
+            $('#txt_Barcode').focus();
+            $("#btn_PopupDiscount").click();
+        }
+        else {
+            alert("Please select discount!")
+        }
+    });
+    function addRow(response) {
+        var gstamount = parseFloat(response[0].unitprice * response[0].gst) / 100
+        var priceexcludegst = parseFloat(response[0].unitprice) - gstamount;
+        var purchid = response[0].purchid;
+        var barcode = response[0].barcode;
+        var prodcode = response[0].prodcode;
+        var prodname = response[0].prodname;
+        var category = response[0].catid;
+        var brand = response[0].brandid;
+        var size = response[0].sizename;
+        var categoryname = response[0].catname;
+        var brandname = response[0].brandname;
+        var sizename = response[0].sizename;
+        var price = priceexcludegst;
+        var gst = response[0].gst;
+        var gstprice = gstamount;
+        var netprice = response[0].unitprice;
+        var quantity = 1;
+        var totalqty = parseFloat($("#pntTotalqty").text());
+        totalqty = totalqty + parseFloat(quantity);
+        var discount = $("#ddl_Discount option:selected").val();
+        var toalunitprice = parseFloat($("#pntTotalunitprice").text());
+        toalunitprice = toalunitprice + parseFloat(response[0].unitprice)
+        var finalpriceexdiscount = parseFloat(response[0].unitprice * quantity);
+        var discountedamount = (finalpriceexdiscount * parseFloat(discount)) / 100;
+        var totaldiscountedamount = parseFloat($("#pntDiscountedamount").text());
+        totaldiscountedamount = totaldiscountedamount + discountedamount;
+        var finalprice = parseFloat(finalpriceexdiscount - discountedamount);
+        var markup = "<tr><td hidden='hidden' ><input type='checkbox' name='record'><td id=" + purchid + ">" + barcode + "</td>"
+            + "<td> " + prodcode + "</td><td>" + prodname + "</td><td id=" + category + ">" + categoryname + "</td>"
+            + "<td id = " + brand + " > " + brandname + "</td><td id=" + size + ">" + sizename + "</td>"
+            + "<td>" + price + "</td><td>" + gst + "</td><td>" + gstprice + "</td><td>" + netprice + "</td>"
+            + "<td>" + quantity + "</td><td>" + discount + "</td><td>" + discountedamount + "</td><td>" + finalprice + "</td>"
+            + "<td><i id='btnD1' class='fa fa-trash fa-5 text-center' style='width:50px; height:50px; color:red' ></i></td></tr > ";
+        $("#tbl_Sale tbody").append(markup);
+        var totalprice = parseFloat($("#lbl_GrandTotal").text());
+        finalprice = parseFloat(finalprice) + parseFloat(totalprice);
+        $("#lbl_GrandTotal").text(Math.ceil(finalprice));
+
+        $("#pntTotalqty").text(totalqty);
+        $("#pntTotalunitprice").text(toalunitprice + '/-');
+        $("#pntGrandTotal").text(parseFloat($("#lbl_GrandTotal").text()) + '/-');
+        $("#pntDiscountedamount").text(totaldiscountedamount + '/-');
+    }
+    //Delete the records
+    $('#tbl_Sale').on('click', '#btnD1', function () {
+
+        if (confirm("Are you sure wants to delete ?.")) {
+            var row = $(this).closest("tr");
+            $("#lbl_GrandTotal").text(parseFloat(parseFloat($("#lbl_GrandTotal").text()) - parseFloat(row.children('td:eq(14)').text())));
+            row.remove();
+        }
+    });
+    $("#btn_Submit").click(function () {
+        if ($("#txt_Mobileno").val() == "") {
+            alert("Please enter mobile no!");
+        }
+        else if ($("#ddl_Paymode").val() == "") {
+            alert("Please select mode of payment!");
+        }
+        else {
+            if (confirm("Are you sure, you wants to submit ?.")) {
+                InsertSale();
+            }
+        }
+    })
+    function InsertSale() {
+        $("#pntPaymode").text($("#ddl_Paymode option:selected").val());
+        var Sales = new Array();
+        var tabledata = $('#tbl_Sale tbody');
+        tabledata.find('tr').each(function (i) {
+            var $tds = $(this).find('td'),
+                outcode = $("#lbl_Outletcode").text(),
+                purchid = $tds.eq(1).attr("id"),
+                barcode = $tds.eq(1).text(),
+                priceexcludgst = $tds.eq(7).text(),
+                gst = $tds.eq(8).text(),
+                gstprice = $tds.eq(9).text(),
+                unitprice = $tds.eq(10).text(),
+                quanity = $tds.eq(11).text(),
+                discountper = $tds.eq(12).text(),
+                discountamount = $tds.eq(13).text(),
+                finalprice = $tds.eq(14).text(),
+                paymentmode = $("#ddl_Paymode option:selected").val(),
+                mobileno = $("#txt_Mobileno").val(),
+                email = $("#txt_Email").val(),
+                name = $("#txt_Custname").val();
+            var saleDetails = {
+                outcode: outcode,
+                purchid: purchid,
+                barcode: barcode,
+                priceexcludgst: priceexcludgst,
+                gst: gst,
+                gstprice: gstprice,
+                unitprice: unitprice,
+                quanity: quanity,
+                discountper: discountper,
+                discountamount: discountamount,
+                paymentmode: paymentmode,
+                finalprice: finalprice,
+                mobileno: mobileno,
+                email: email,
+                name: name
+            };
+            Sales.push(saleDetails);
+        });
+        if (Sales.length != 0) {
+            var options = {};
+            options.url = "/Outlet/Sale/InsertSale";
+            options.type = "POST";
+            options.contentType = "application/json;charset=utf-8";
+            options.dataType = "json";
+            options.data = JSON.stringify({ Sales });
+            options.success = function (response) {
+                if (response == '-1') {
+                    alert('Allready Saved , You are trying many times');
+                }
+                else if (response == '-2') {
+                    alert('Please add a valid value');
+                }
+                else {
+                    $("#pntBillno").text(response);
+                    $("#tbl_Sale").find("tr:gt(0)").remove();
+                    GetInvoicenoAfterInsert(response);
+                    convertvalueword();
+                    Sales = [];
+                }
+            };
+            options.error = function (response) {
+                alert(response);
+            };
+            $.ajax(options);
+        }
+        else {
+
+        }
+    }
+    function GetInvoicenoAfterInsert(invoice) {
+        $.ajax({
+            type: "GET",
+            url: "/Outlet/Sale/latestbiinoselectproduct",
+            data: { invoice: invoice },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    var mark = "<tr style='text-align:center;'>" +
+                        "<td>" + response[i].prodname + "(" + response[i].sizename + ")</td>" +
+                        "<td>" + response[i].quanity + "</td>" +
+                        "<td>" + response[i].unitprice + "</td>" +
+                        "<td>" + response[i].discountper + "</td>" +
+                        "<td>" + response[i].finalprice + "</td>" +
+                        "</tr>"
+                    $("#tbl_PrintSale tbody").append(mark);
+                }
+                $("#btn_Popup").click();
+            },
+            failure: function (response) {
+                alert(response);
+            },
+            error: function (response) {
+                alert(response);
+            }
+        });
+    }
+    function GetCCodeCMob() {
+        $.ajax({
+            type: "GET",
+            url: "/Outlet/Sale/GetCustomerDetailsByMobNo",
+            data: { mobileno: $("#txt_Mobileno").val() },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.length > 0) {
+                    $("#txt_Email").val(response[0].emailid);
+                    $("#txt_Custname").val(response[0].custname)
+                }
+            },
+            failure: function (response) {
+                alert(response);
+            },
+            error: function (response) {
+                alert(response);
+            }
+        });
+    }
+    function convertvalueword() {
+        var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+
+        var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+
+        var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+
+        var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+        function toWords(s) {
+            s = s.toString();
+            s = s.replace(/[\, ]/g, '');
+            if (s != parseFloat(s)) return 'not a number';
+            var x = s.indexOf('.');
+            if (x == -1) x = s.length;
+            if (x > 15) return 'too big';
+            var n = s.split('');
+            var str = '';
+            var sk = 0;
+            for (var i = 0; i < x; i++) {
+                if ((x - i) % 3 == 2) {
+                    if (n[i] == '1') {
+                        str += tn[Number(n[i + 1])] + ' ';
+                        i++;
+                        sk = 1;
+                    } else if (n[i] != 0) {
+                        str += tw[n[i] - 2] + ' ';
+                        sk = 1;
+                    }
+                } else if (n[i] != 0) {
+                    str += dg[n[i]] + ' ';
+                    if ((x - i) % 3 == 0) str += 'Hundred';
+                    sk = 1;
+                }
+                if ((x - i) % 3 == 1) {
+                    if (sk) str += th[(x - i - 1) / 3] + ' ';
+                    sk = 0;
+                }
+            }
+            if (x != s.length) {
+                var y = s.length;
+                str += 'Point ';
+                for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' ';
+            }
+            return str + ' Rupees Only'.replace(/\s+/g, ' ');
+
+        }
+
+        var decimal = $("#lbl_GrandTotal").text();
+        var name = toWords(parseFloat(decimal));
+        $("#lbl_GrandTotalTextBill").text(name);
+    }
+    function printDiv() {
+
+        var divToPrint = document.getElementById('invoice-POS');
+
+        //var newWin = window.open('', 'Print-Window');
+        window.document.open();
+
+        window.document.write('<html><head><link href="~/css/SaleStyle.css" rel="stylesheet" /></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        window.document.close();
+        window.onafterprint = function () {
+            window.location.reload(true);
+        }
+        //setTimeout(function () { newWin.close(); }, 10);
+        //<style type="text/css">body {-webkit-print-color-adjust: exact; font-family: Arial; } img{display:visible}</style>
+        //var mywindow = window.open();
+        //var is_chrome = Boolean(mywindow.chrome);
+        //mywindow.document.write('<html><head><link href="~/css/SaleStyle.css" rel="stylesheet" /></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        //if (is_chrome) {
+        //    setTimeout(function () { // wait until all resources loaded
+        //        mywindow.document.close(); // necessary for IE >= 10
+        //        mywindow.focus(); // necessary for IE >= 10
+        //        mywindow.print(); // change window to winPrint
+        //        mywindow.close(); // change window to winPrint
+        //    }, 250);
+        //} else {
+        //    mywindow.document.close(); // necessary for IE >= 10
+        //    mywindow.focus(); // necessary for IE >= 10
+
+        //    mywindow.print();
+        //    mywindow.close();
+        //}
+
+        //return true;
+
+        //var _window = window.open('');
+        //_window.document.write('<html><head><link type="text/css"  href="~/css/SaleStyle.css" rel="stylesheet" media="print" /></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        //// required for IE >= 10
+        //_window.document.close();
+        //_window.focus();
+
+        //_window.document.body.onload = function () {
+        //    // continue to print
+        //    _window.print();
+        //    _window.close();
+        //};
+
+        //return true;
+    }
+    function togglePopup() {
+        $(".content").toggle();
+    }
+</script>

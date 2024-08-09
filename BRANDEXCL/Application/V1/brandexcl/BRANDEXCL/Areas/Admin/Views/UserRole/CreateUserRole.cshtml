@@ -1,0 +1,188 @@
+﻿
+@{
+    ViewBag.Title = "CreateUserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+   input[type=text], select {
+  max-width: 100% !important;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type=button] {
+  background-color: #0d5558;
+    color: white;
+    padding: 6px 9px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    font-family: verdana;
+    font-size: 13px;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+
+</style>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom"><span class="header_text"></span></div>
+                <div class="col-md-12 box bb">
+
+                    <div class="main">
+                        <div class="header">
+                           
+                        </div>
+                        <label for="fname">User Role:</label><br/>
+                        <input type="text" id="roledesc" name="firstname" placeholder="User Role.."  class="form-control textbx">
+
+                        <input type="button" value="Add Role" id="AddRole">
+                        <input type="button" id="updateRole" value="Update Role" class="newdesg" style="display:none" />
+                        <div style="height:30px"></div>
+                        @*<div style="margin-left:30px;">
+                            <input type="hidden" value="" id="hdnid" />
+                                    User Role:
+                                        <input type="text" id="roledesc" class="form-control textbx"  />
+                            ljj
+                              
+                                        <input type="button" value="Submit New Role" id="AddRole" class="newdesg" />
+                                        <input type="button" id="updateRole" value="Update Year" class="newdesg" style="display:none" />
+
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        
+        var url = window.location.href;
+        var value = url.substring(url.lastIndexOf('/') + 1);
+        if (value == "CreateUserRole") {
+            $("#updateRole").css("display", "none");
+            $(".header_text").text("Insert User Role");
+            $("#AddRole").css("display", "block");
+
+        }
+        else {
+            $("#updateRole").css("display", "block");
+            $(".header_text").text("Update User Role");
+            getalldata();
+            $("#AddRole").css("display", "none");
+        }
+        $("#AddRole").click(function () {
+            
+            var daaata = validateRole();
+            if (daaata != 1) {
+                return false;
+            }
+            if (daaata == undefined) {
+                return false;
+            }
+            else {
+                var EmpModel = {
+                    RoleDesc: $("#roledesc").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    URL: "/Admin/UserRole/CreateUserRole",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({ theRole: EmpModel }),
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    success: function (response) {
+                        alert(response);
+                        window.location.href = "/Admin/UserRole/ViewUserRole";
+                    }
+                });
+            }
+        });
+        $("#updateRole").click(function () {
+            
+            var daaata = validateRole();
+            if (daaata != 1) {
+                return false;
+            }
+            if (daaata == undefined) {
+                return false;
+            }
+            else {
+                var EmpModel = {
+                    RoleID: $('#hdnid').val(),
+                    RoleDesc: $("#roledesc").val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    URL: "/Admin/UserRole/CreateUserRole",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({ theRole: EmpModel }),
+                    error: function (response) {
+                        alert(response.responseText);
+                    },
+                    success: function (response) {
+                        alert(response);
+                        window.location.href = "/Admin/UserRole/ViewUserRole";
+                    }
+                });
+            }
+            });
+
+    });
+
+    function getalldata() {
+        
+        var url = window.location.href;
+        var id = url.substring(url.lastIndexOf('/') + 1);
+        $.ajax({
+            type: 'GET',
+            url: '/Admin/UserRole/PopulateFormField',
+            data: { RoleID: id },
+            dataType: 'json',
+            success: function (data) {
+                $('#hdnid').val(data[0].RoleID);
+                $('#roledesc').val(data[0].RoleDesc);
+            }
+        });
+    }
+
+    function validateRole() {
+        var roledesc = $('#roledesc').val();
+        var regdesc = /^[A-Za-z0-9\s]+$/;
+        $('.error').hide();
+        if (roledesc == "") {
+            $('#roledesc').after('<span class="error">Please Enter Role Description</span>');
+        }
+        else if (!regdesc.test(roledesc)) {
+            $('#roledesc').after('<span class="error">Role Description is Invalid</span>');
+        }
+        
+        else {
+            return 1;
+        }
+    }
+</script>

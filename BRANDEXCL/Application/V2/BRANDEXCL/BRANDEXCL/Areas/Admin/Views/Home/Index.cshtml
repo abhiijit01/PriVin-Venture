@@ -1,0 +1,249 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<html>
+<head>
+
+    <title>Boyanica</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+    <script src="~/js/counter.js"></script>
+    <link href="~/css/counter.css" rel="stylesheet" />
+</head>
+<body>
+
+    <section >
+        <div class="container">
+            <div class="row hidden-sm">
+                <div class="col-md-4 col-sm-12">
+                    <div class="counter blue">
+                        <h3>Admin</h3>
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <span class="counter-value">1523</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="counter blue">
+                        <h3>Employee</h3>
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <span class="counter-value">1523</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="counter blue">
+                        <h3>User</h3>
+                        <div class="counter-content">
+                            <div class="counter-icon">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <span class="counter-value">1523</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br /><br />
+           
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+                </div>
+            </div><br /><br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="pieContainer" style="height: 300px; width: 100%;"></div>
+                </div>
+                <div class="col-md-6">
+                    <div id="pyramidContainer" style="height: 300px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="~/js/responsive.js"></script>
+    <script src="~/js/jquery.js"></script>
+</body>
+</html>
+<script>
+
+    $(document).ready(function () {
+        
+        //$(function () {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Admin/Home/SelectRateSale",
+        //        data: '{}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            var dataPoint = new Array();
+        //                    $.each(response,function (i) {
+        //                        var approvedate = response[i].saledate;
+        //                        var approvedate_Obj = new Date(parseInt(approvedate.substr(6)));
+        //                        var month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        //                        var day = approvedate_Obj.getDate();
+        //                        var month_index = approvedate_Obj.getMonth();
+        //                        var year = approvedate_Obj.getFullYear();
+        //                        var dataeFSFSF = "" + day + "-" + month_names[month_index] + "-" + year;
+        //                        var price = response[i].finalprice;
+        //                        dataPoint.push({ label: dataeFSFSF, y: price });
+
+        //                    });
+        //                    var chart = new CanvasJS.Chart("chartContainer", {
+        //                        title: {
+        //                            text: "Sale Graph"
+        //                        },
+
+        //                        data: [
+        //                        {
+        //                            // Change type to "doughnut", "line", "splineArea", etc.
+        //                            type: "spline",
+
+        //                            dataPoints: dataPoint,
+        //                            //[
+        //                            //{ label: dataeFSFSF, y: response[0].finalprice }
+        //                            //],
+        //                        }
+        //                        ],
+
+        //                    });
+        //                    chart.render();
+        //        },
+        //        failure: function (response) {
+        //            alert(response);
+        //        },
+        //        error: function (response) {
+        //            alert(response);
+        //        }
+        //    });
+        //})
+
+        ////$.ajax({
+        ////    url: 'https://nanosdk-countries-v1.p.rapidapi.com/countries',
+        ////    type: 'GET',
+        ////    dataType: 'json',        
+        ////    success: function (data) {
+        ////        alert(data);
+                
+        ////    },
+        ////    error: function (data) {
+        ////        alert("Error in Database");
+        ////    },
+        ////});
+
+
+        //$(function () {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Admin/Home/SelectRateSale",
+        //        data: '{}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            var dataPoint = new Array();
+        //            $.each(response, function (i) {
+        //                var approvedate = response[i].saledate;
+        //                var approvedate_Obj = new Date(parseInt(approvedate.substr(6)));
+        //                var month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        //                var day = approvedate_Obj.getDate();
+        //                var month_index = approvedate_Obj.getMonth();
+        //                var year = approvedate_Obj.getFullYear();
+        //                var dataeFSFSF = "" + day + "-" + month_names[month_index] + "-" + year;
+        //                var price = response[i].finalprice;
+        //                dataPoint.push({ label: dataeFSFSF, y: price });
+
+        //            });
+        //            var chart = new CanvasJS.Chart("pieContainer", {
+        //                title: {
+        //                    text: "Stock Chart"
+        //                },
+
+        //                data: [
+        //                {
+        //                    // Change type to "doughnut", "line", "splineArea", etc.
+        //                    type: "column",
+
+        //                    dataPoints: dataPoint,
+        //                    //{ label: dataeFSFSF, y: response[0].finalprice }
+        //                    //[
+        //                    //],
+        //                }
+        //                ],
+
+        //            });
+        //            chart.render();
+        //        },
+        //        failure: function (response) {
+        //            alert(response);
+        //        },
+        //        error: function (response) {
+        //            alert(response);
+        //        }
+        //    });
+        //});
+
+
+        //$(function () {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "/Admin/Home/SelectRateSale",
+        //        data: '{}',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            var dataPoint = new Array();
+        //            $.each(response, function (i) {
+        //                var approvedate = response[i].saledate;
+        //                var approvedate_Obj = new Date(parseInt(approvedate.substr(6)));
+        //                var month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        //                var day = approvedate_Obj.getDate();
+        //                var month_index = approvedate_Obj.getMonth();
+        //                var year = approvedate_Obj.getFullYear();
+        //                var dataeFSFSF = "" + day + "-" + month_names[month_index] + "-" + year;
+        //                var price = response[i].finalprice;
+        //                dataPoint.push({ label: dataeFSFSF, y: price });
+
+        //            });
+        //            var chart = new CanvasJS.Chart("pyramidContainer", {
+        //                title: {
+        //                    text: "Transaction Balance Pyramid"
+        //                },
+
+        //                data: [
+        //                {
+        //                    // Change type to "doughnut", "line", "splineArea", etc.
+        //                    type: "pyramid",
+
+        //                    dataPoints: dataPoint,
+        //                    //[
+        //                    //{ label: dataeFSFSF, y: response[0].finalprice }
+        //                    //],
+        //                }
+        //                ],
+
+        //            });
+        //            chart.render();
+        //        },
+        //        failure: function (response) {
+        //            alert(response);
+        //        },
+        //        error: function (response) {
+        //            alert(response);
+        //        }
+        //    });
+        //});
+    });
+</script>
+ 

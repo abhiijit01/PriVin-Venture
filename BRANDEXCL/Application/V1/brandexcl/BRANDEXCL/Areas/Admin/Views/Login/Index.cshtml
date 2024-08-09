@@ -1,0 +1,212 @@
+﻿
+@{
+    Layout = null;
+}
+<style>
+    .field-icon {
+  float: right;
+  margin-left: -25px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2;
+}
+</style>
+<html>
+<head>
+  
+    <title>BRAND EXCLUSIVE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+    <link href="~/css/carousel.css" rel="stylesheet" />
+    <link href="~/css/responsive.css" rel="stylesheet" />
+
+    <script src="~/js/counter.js"></script>
+    <link href="~/css/counter.css" rel="stylesheet" />
+</head>
+<body>
+
+    <section class="login-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 col-xs-12 col-sm-12 login-sec">
+                    <center>
+                        <img src="~/Images/tbd.png" alt="Avatar" style="height: 180px; width: 380px " class="avatar" />
+                    </center>
+
+                    <form class="login-form" id="form">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1" class="text-uppercase">Username</label>
+                            <input type="text" class="form-control" placeholder="Enter Username" id="uname" required>
+
+
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1" class="text-uppercase">Password</label>
+                            <input type="password" class="form-control" placeholder="Enter Password" id="psw" required>
+                            <span toggle="#psw" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                        </div>
+
+                       
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" id="remember_me" checked="checked" name="remember" class="form-check-input">
+                                <small>Remember Me</small>
+                            </label>
+                            <button type="button" class="cancelbtn btn btn-success ">Cancel</button>
+
+                            <button type="button" id="submit" class="btn btn-login float-right mt10">Login</button>
+                        </div>
+                    </form>
+                    <div class="copy-text"> <a href="/User/NewUser/ForgotPassword">Forgot password</a></div>
+                </div>
+                <div class="col-md-7  col-xs-12 col-sm-12 banner-sec pd0 hidden-xs hidden-sm">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        @*<ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                        </ol>*@
+                        <div class="carousel-inner" role="listbox">
+                            <div class="carousel-item">
+                                <img class="d-block img-fluid" src="~/Images/slid1.jpeg" style="height:600px;width:1000px" alt="First slide">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <div class="banner-text">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <img class="d-block img-fluid" src="~/Images/slid2.jpeg" style="height: 600px; width: 1000px " alt="Second slide">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <div class="banner-text">
+                                        @*<h2>This is Heaven</h2>
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>*@
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item active">
+                                <img class="d-block img-fluid" src="~/Images/slid4.jpeg" style="height: 600px; width: 1000px " alt="Fourth slide">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <div class="banner-text">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            
+            </div>
+            </div>
+    </section>
+  
+    <script>
+    $(document).ready(function ()
+    {
+
+        $("#submit").on('click', function () {
+            
+            var uname = $("#uname").val();
+            var psw = $("#psw").val();
+            var linkdata =
+             {
+                 Usr_Nm: $("#uname").val(),
+                 Pwd: $("#psw").val()
+             };
+            if (uname = '')
+            {
+                alert("Please give user Name");
+                return false;
+            }
+            if (psw = '')
+            {
+                alert("Please give Emailid");
+                return false;
+            }
+            else {
+                
+                $.ajax({
+
+                    type: "POST",
+                    url: "/Admin/Login/LoginData/",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({ theUser: linkdata }),
+                    error: function (response)
+                    {
+                        alert(response);
+                    },
+                    success: function (response)
+                    {
+                        if (response == "User Exists")
+                        {
+                            window.location.href = "/Admin/Home/Index";
+                        }
+                        else {
+                            alert(response);
+                        }
+
+
+                    }
+                });
+            }
+        })
+    })
+    var input = $("#psw");
+    input.on ("keyup", function (event) {
+        
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $("#submit").click();
+        }
+    });
+    $(function () {
+        
+
+                if (localStorage.chkbx && localStorage.chkbx != '') {
+                    $('#remember_me').attr('checked', 'checked');
+                    $('#uname').val(localStorage.usrname);
+                    $('#psw').val(localStorage.pass);
+                } else {
+                    $('#remember_me').removeAttr('checked');
+                    $('#uname').val('');
+                    $('#psw').val('');
+                }
+
+                $('#remember_me').click(function() {
+
+                    if ($('#remember_me').is(':checked')) {
+                        // save username and password
+                        localStorage.usrname = $('#uname').val();
+                        localStorage.pass = $('#psw').val();
+                        localStorage.chkbx = $('#remember_me').val();
+                    } else {
+                        localStorage.usrname = '';
+                        localStorage.pass = '';
+                        localStorage.chkbx = '';
+                    }
+                });
+    });
+
+    $(".toggle-password").click(function () {
+
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input = $($(this).attr("toggle"));
+        if (input.attr("type") == "password") {
+            input.attr("type", "text");
+        } else {
+            input.attr("type", "password");
+        }
+    });
+    </script>
+    <script src="~/js/responsive.js"></script>
+    <script src="~/js/jquery.js"></script>
+</body>
+</html>
+
+
+
+

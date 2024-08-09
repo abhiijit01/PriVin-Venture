@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewBag.Title = "View Designation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .newbtn {
+        color: white;
+        background-color: dodgerblue;
+        border: none;
+        cursor: pointer;
+        height: 30px;
+    }
+
+    .deletebtn {
+        color: white;
+        background-color: dodgerblue;
+        position: absolute;
+        right: 15px;
+        border: none;
+        cursor: pointer;
+        height: 30px;
+    }
+</style>
+
+<div class="container" id="DivEmpList">
+    <h3>View All Designation Lists</h3>
+    <div class="col-md-12">
+
+        <table id="TblEmpDesg" class="table table-striped table-bordered table-sm" cellspacing="0" style="">
+            <thead>
+                <tr style="background-color:dodgerblue; color:white">
+                    <th><input type="checkbox" onclick="checkAll(this)"></th>
+                    <th> Designation Id </th>
+                    <th> Designation Name</th>
+                    <th> Designation Code</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <input type="button" value="Create New Designation" id="newdesg" class="newbtn" />
+        <input type="button" value="Delete Designation" id="deletedesg" class="deletebtn" />
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var tr;
+        $.getJSON("/User/Designation/ViewDesignation1", function (json) {
+            $.each(json, function (i, DesgData) {
+
+                var degid = DesgData.Desg_ID;
+                tr = $('<tr id="' + ('UserDesg' + DesgData.Desg_ID + '') + '" onclick=getdata(this)>');
+                tr.append("<td><input type='checkbox' name='record'></td>");
+                tr.append('<td class="DesgID" >' + DesgData.Desg_ID + '</td>');
+                tr.append("<td class='DesgName'>" + DesgData.Designation_Name + "</td>");
+                tr.append("<td class='DesgCode'>" + DesgData.Desg_Code + "</td>");
+                tr.append("<td>" + "<a class='EditCss' href=/User/Designation/CreateDesignation/" + degid + ">Edit</a>" + "</td>");
+                $('#TblEmpDesg').append(tr);
+
+            });
+
+        });
+
+    });
+    $("#newdesg").on("click", function () {
+        window.location.href = "/User/Designation/CreateDesignation";
+    })
+    $("#deletedesg").on("click", function () {
+
+        var DesgID1s = new Array();
+        $('input[type="checkbox"]').each(function () {
+            if ($(this).prop('checked')) {
+                DesgID1s.push($(this).closest('tr').find('.DesgID').text());
+            }
+        });
+        var DesgID1 = DesgID1s.filter(function (el) {
+            return el != "";
+        });
+        if (DesgID1.length != 0) {
+            if (confirm("Are you sure wants to delete ?")) {
+
+                var options = {};
+                options.url = "/User/Designation/DeleteDesignation";
+                options.type = "POST";
+                options.data = JSON.stringify(DesgID1);
+                options.contentType = "application/json; charset=utf-8";
+                options.dataType = "json";
+                options.success = function (response) {
+                    alert("Deleted Successfully")
+                    window.location.href = "/User/Designation/ViewDesignation";
+
+                };
+                options.error = function () {
+                    alert("Error while deleting the records!");
+                };
+                $.ajax(options);
+            }
+
+        }
+        else {
+            alert("Please Check the Data row you want to delete");
+        }
+    })
+    function getdata(val) {
+        var row = $(val).closest('tr');
+        $(row).click(function (event) {
+            if (event.target.type !== 'checkbox') {
+                $(':checkbox', this).trigger('click');
+            }
+        });
+    }
+
+    function checkAll(bx) {
+        var cbs = document.getElementsByTagName('input');
+        for (var i = 0; i < cbs.length; i++) {
+            if (cbs[i].type == 'checkbox') {
+                cbs[i].checked = bx.checked;
+            }
+        }
+    }
+
+</script>

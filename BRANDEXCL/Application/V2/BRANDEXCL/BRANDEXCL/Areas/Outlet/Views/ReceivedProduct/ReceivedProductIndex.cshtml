@@ -1,0 +1,783 @@
+﻿﻿﻿
+@{
+    ViewBag.Title = "ReceivedProductIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .container-body {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .container-white {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .container-yellow {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .mtbm {
+        margin-bottom: 20px;
+        /*border-bottom: 1px dashed #ccc;*/
+        background-color: #f7e8e9;
+        padding: 8px;
+    }
+
+    .container-fluid {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 3px;
+    }
+
+    .ks {
+        max-width: 100% !important;
+        width: 100%;
+        padding: 4px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btnn {
+        color: white;
+        padding: 6px 9px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #45a049;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    #example_filter {
+        float: right;
+    }
+
+    #example_paginate {
+        float: right;
+    }
+
+    label {
+        display: inline-flex;
+        margin-bottom: .5rem;
+        margin-top: .5rem;
+        width: 8.5in;
+        margin: 0in .1875in;
+    }
+</style>
+<link href="~/css/print.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-12 ">
+            <input type="hidden" id="Outid" value="" />
+            <input type="hidden" id="Countid" value="" />
+            <input type="hidden" id="itemcode" value="" />
+
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Product Recieve </div>
+                @*<input type="button" value="Sync Data to Server" class="btn btn-outline-success" onclick="SyncData()" style="float:right" />*@
+                <div class="col-lg-12 box bb">
+                    <input type="hidden" id="hf_pageid" value="" />
+                    <div class="row hd_titl mtbm" style="border-bottom: 1px solid #e5e5e5;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12 col-xs-12">
+                                    <span>Store Name:</span>
+                                    <span id="lbl_Outletname" style="color:deeppink;"></span>
+                                </div>
+                                <div class="col-lg-6 col-sm-12 col-xs-12"></div>
+                                <div class="col-lg-2 col-sm-12 col-xs-12">
+                                    <span>Code:</span>
+                                    <span id="lbl_Outletcode" style="color:deeppink"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="container-yellow">
+                    <div class="col-lg-12 col-xs-12 col-sm-12 formbox">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                                <span>Receive Date:</span>
+                                <input type="date" class="ks" id="txt_Date" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-white">
+                <div class="col-lg-12 col-xs-12 col-sm-12 formbox">
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Category:</span><br />
+                            <select required id="ddl_Category" class="ks"></select>
+                        </div>
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Brand:</span><br />
+                            <select required id="ddl_Brand" class="ks"></select>
+                        </div>
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Size:</span>
+                            <select required id="ddl_Size" class="ks"></select>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        @*<div class="col-lg-4 col-sm-12 col-xs-12">
+                                <span>Barcode:</span><br />
+                                <input type="text" class="ks" autocomplete="off" id="txt_Barcode" value="" />
+                            </div>*@
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Unit Price:</span>
+                            <input type="number" class="ks" value="" id="txt_Unitprice" />
+                        </div>
+
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Product Name:</span><br />
+                            <input type="text" class="ks" id="txt_Productname" value="" />
+                        </div>
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>Description:</span><br />
+                            <input type="text" class="ks" id="txt_Description" value="" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-sm-12 col-xs-12">
+                            <span>GST(%):</span>
+                            <input type="number" class="ks" value="0.00" id="txt_GST" readonly />
+                        </div>
+                        @*<div class="col-lg-4 col-sm-12 col-xs-12">
+                                <span>Quantity:</span><br />
+                                <input type="number" class="ks" id="txt_Quantity" value="1" />
+                            </div>*@
+
+                    </div>
+                </div>
+
+
+                @*<div class="container-body">
+                        <div class="col-lg-12 col-xs-12 col-sm-12 formbox">
+
+                        </div>
+                    </div>*@
+
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-lg-10 col-sm-12 col-xs-12"></div>
+                    <div class="col-lg-2 col-sm-12 col-xs-12">
+                        <input type="button" id="btn_AddRowtotable" value="Add More" class="btn btn-primary" style="float:right;" />
+                        <input type="button" id="btn_Update" value="Update" class="btn btn-success" onclick="" style="float:right;" />
+                    </div>
+                </div>
+                @*<label id="lbl_msg"></label>*@
+
+                <div class="row" id="divAddMore">
+                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                        <div style="overflow-x:auto;margin-top:15px">
+                            <table id="tbl_Productrecieve" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr style="background:#48839e;font-size:12px;color:white">
+
+                                        <th>Store Name</th>
+                                        <th>Receiving Date</th>
+                                        <th>Barcode</th>
+                                        <th>Product Name</th>
+                                        <th>Unit Price</th>
+                                        <th>Total Price(Excluding GST)</th>
+                                        <th>GST(%)</th>
+                                        <th>GST Amount</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Size</th>
+                                        <th>Quantity</th>
+                                        <th>Product Description</th>
+                                        <th>Barcode</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-8 col-xs-12 "></div>
+                    <div class="col-sm-12 col-lg-3 col-xs-12">
+
+                    </div>
+                    <div class="col-sm-12 col-lg-1 col-xs-12">
+                        <input type="button" id="btn_Submit" value="Submit" class="btn btn-primary" onclick="" style="float:right;" />
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-top:15px;">
+    <div class="col-sm-12 col-lg-11 col-xs-12 "></div>
+    <div class="col-sm-12 col-lg-1 col-xs-12">
+        <button type="button" hidden="hidden" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btn_Popup">Print</button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="barcode-label">
+                            @*<div class="label">
+                                        <img src="" height="74" width="74">
+                                        <br> Fred Smith
+                                        <br> Date of Birth: 04/03/2000
+                                        <br> Year: 2015
+                                        <br> League: Recreation
+                                        <br> Id: 343535
+                                        <br>
+                                    </div>
+                                <div class="page-break"></div>*@
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="btn_Print" value="Print" class="btn btn-info btnhide" onclick='printDiv();' />
+                        @*<button type="button" id="btn_Close" class="btn btn-default btnhide" data-dismiss="modal">Close</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        //$("#btn_ViewallPurchaseDetails").click(function () {
+        //    gotoview();
+        //})
+        //$("#txt_Barcode").focus();
+        $("#btn_Update").hide();
+        $("#ddl_Countername").empty().append('<option selected="selected" value="0">--Select--</option>');
+        $(function () {
+
+            var ddl_Countername = $("#ddl_Countername");
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Counter/ViewCounterDDL",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    ddl_Countername.empty().append('<option selected="selected" value="0">--Select--</option>');
+                    $.each(response, function () {
+                        ddl_Countername.append($("<option></option>").val(this['countcode']).html(this['countnm']));
+                    });
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        $(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Outlet/OutletSelectByUserId",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#Outid').val(response[0].outid);
+                    $("#lbl_Outletname").text(response[0].outletname);
+                    $("#lbl_Outletcode").text(response[0].outcode)
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        $(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Inventory/Category/ViewCategoryDDL",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $catgorylist = $("#ddl_Category");
+                    $catgorylist.empty();
+                    $catgorylist.append('<option value="">Select</option>')
+                    $.each(response, function (i, item) {
+                        $catgorylist.append('<option value="' + item["catid"] + '"> ' + item["catname"] + ' </option>');
+                    });
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        $(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Inventory/Brand/ViewBrandDDL",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $brandlist = $("#ddl_Brand");
+                    $brandlist.empty();
+                    $brandlist.append('<option value="">Select</option>')
+                    $.each(response, function (i, item) {
+                        $brandlist.append('<option value="' + item["brandid"] + '"> ' + item["brandname"] + ' </option>');
+                    });
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        $(function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Outlet/Size/ViewSizeDDL",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $sizelist = $("#ddl_Size");
+                    $sizelist.empty();
+                    $sizelist.append('<option value="">Select</option>')
+                    $.each(response, function (i, item) {
+                        $sizelist.append('<option value="' + item["sizeid"] + '"> ' + item["descr"] + ' </option>');
+                    });
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+    });
+    var input = $("#btn_AddRowtotable");
+    input.on("keyup", function (event) {
+
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            $("#submit").click();
+        }
+    });
+    function CheckDecimal() {
+        var decimal = /^-?\d*(\.\d+)?$/;
+        var unitprice = document.getElementById("txt_unitprice");
+        //$("#txt_unitprice").val();
+        if (unitprice.value.match(decimal)) {
+
+            return true;
+        }
+        else {
+            alert('Unit Price should be in price format as per the currency rule ')
+            return false;
+        }
+    }
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    var decimalpoint = new Array();
+    decimalpoint.push(46); //deimal point
+    function IsNumeric(e) {
+        var keyCode = e.which ? e.which : e.keyCode
+        var ret = ((keyCode >= 48 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
+        document.getElementById("error").style.display = ret ? "none" : "inline";
+        return ret;
+    }
+
+    function numericOnly(elementRef) {
+        var keyCodeEntered = (event.which) ? event.which : (window.event.keyCode) ? window.event.keyCode : -1;
+        if ((keyCodeEntered >= 48) && (keyCodeEntered <= 57)) {
+            return true;
+        }
+        else if (keyCodeEntered == 46) {
+            if ((elementRef.value) && (elementRef.value.indexOf('.') >= 0))
+
+                return false;
+
+            else
+                return true;
+        }
+        return false;
+        document.getElementById("errorigst").style.display = ret ? "none" : "inline";
+    }
+    //$("#ddl_Size").change(function () {
+    //    var rowCount = $('#tbl_Productrecieve tr').length
+    //    $.ajax(
+    //        {
+    //            type: "POST",
+    //            url: "/Outlet/ReceivedProduct/BarcodeSelectByBarcode",
+    //            data: JSON.stringify({ barcode: $("#txt_Barcode").val(), sizeid: $("#ddl_Size").val() }),
+    //            contentType: "Application/json,charset=utf-8",
+    //            dataType: "json",
+    //            success: function (response) {
+    //                //Calculate price includi GST
+    //                //GST Amount = (Original Cost x GST %) / 100
+    //                //Net Price = Original Cost + GST Amount
+    //                if (response.length > 0) {
+    //                    if (rowCount > 1) {
+    //                        alert("Duplicate barcode detected,Please submit the existing data first to update the quantity!");
+    //                    }
+    //                    else {
+    //                        //style = "pointer-events:none"
+    //                        $("#txt_Barcode").val(response[0].barcode).prop("readonly", "true");
+    //                        $("#txt_Productname").val(response[0].prodname).prop("readonly", "true");
+    //                        $("#txt_Unitprice").val(response[0].unitprice).prop("readonly", "true");
+    //                        $("#txt_GST").val(response[0].gst).prop("readonly", "true");
+    //                        $("#ddl_Category").val(response[0].catid).prop("readonly", "true").css("pointer-events", "none");
+    //                        $("#ddl_Brand").val(response[0].brandid).prop("readonly", "true").css("pointer-events", "none");
+    //                        $("#ddl_Size").val(response[0].sizeid).prop("readonly", "true").css("pointer-events", "none");
+    //                        $("#txt_Quantity").val(response[0].qty);
+    //                        $("#txt_Description").val(response[0].proddescr).prop("readonly", "true");
+    //                        $("#btn_AddRowtotable").hide();
+    //                        $("#divAddMore").hide();
+    //                        $("#btn_Submit").hide();
+    //                        $("#btn_Update").show();
+    //                    }
+    //                }
+    //            },
+    //            failure: function (response) {
+    //                alert(response)
+    //            },
+    //            error: function (response) {
+    //                alert(response)
+    //            }
+    //        });
+    //});
+    $("#btn_Update").click(function () {
+        $.ajax(
+            {
+                type: "POST",
+                url: "/Outlet/ReceivedProduct/UpdatReceivedeqty",
+                data: JSON.stringify({ barcode: $("#txt_Barcode").val(), sizeid: $("#ddl_Size").val(), qty: $("#txt_Quantity").val() }),
+                contentType: "Application/json,charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response == '1') {
+                        alert("Data updated Successfully!")
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Data couldn't updated,Please contact smartmee support!")
+                        window.location.reload();
+                    }
+                },
+                failure: function (response) {
+                    alert(response)
+                },
+                error: function (response) {
+                    alert(response)
+                }
+            });
+    });
+    $("#btn_AddRowtotable").click(function () {
+        var outletname = $("#lbl_Outletname").text();
+        var invoicedate = $("#txt_Date").val();
+        var prodname = $("#txt_Productname").val();
+        var unitprice = $("#txt_Unitprice").val();
+        var gst = $("#txt_GST").val();
+        var category = $("#ddl_Category").val();
+        var categoryname = $("#ddl_Category option:selected").text();
+        var brand = $("#ddl_Brand").val();
+        var brandname = $("#ddl_Brand option:selected").text();
+        var size = $("#ddl_Size").val();
+        var sizename = $("#ddl_Size option:selected").text();
+        //var quantity = $("#txt_Quantity").val();
+        var description = $("#txt_Description").val();
+        var unitprice = $("#txt_Unitprice").val();
+        if (invoicedate == "") {
+            alert("Please enter invoicedate!");
+        }
+        else if (prodname == "") {
+            alert("Please enter prodname!");
+        }
+        else if (unitprice == "0.00") {
+            alert("Please enter unitprice!");
+        }
+        else if (category == "") {
+            alert("Please select category!");
+        }
+        else if (brand == "") {
+            alert("Please select brand!");
+        }
+        else if (size == "") {
+            alert("Please select size!");
+        }
+        //else if (quantity == "0") {
+        //    alert("Please enter quantity!");
+        //}
+        else {
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/Outlet/ReceivedProduct/GenerateBarCodeAndGetBarcode",
+                    contentType: "Application/json,charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        var barcode = response.Barcode;
+                        var barcodeimage = response.BarcodeImage;
+                        //Calculate price includi GST
+                        //GST Amount = (Original Cost x GST %) / 100
+                        //Net Price = Original Cost + GST Amount
+                        gstamount = parseFloat(unitprice * gst) / 100
+                        var totalpricegst = parseFloat(unitprice) - gstamount;
+                        var markup = "<tr><td hidden='hidden' ><input type='checkbox' name='record'></td><td>" + outletname + "</td>"
+                            + "<td>" + invoicedate + "</td><td>" + barcode + "</td><td>" + prodname + "</td><td>" + unitprice + "</td><td>" + totalpricegst + "</td>"
+                            + "<td>" + gst + "</td><td>" + gstamount + "</td><td id=" + category + ">" + categoryname + "</td><td id=" + brand + ">" + brandname + "</td>"
+                            + "<td id=" + size + ">" + sizename + "</td><td>" + 1 + "</td><td>" + description + "</td><td><img style='height:50px;width:200px' src='" + barcodeimage + "' alt='' /></td>"
+                            + "<td><i id='btnD1' class='fa fa-remove' style='width:50px; height:50px; color:red' ></i></td></tr > ";
+                        $("table tbody").append(markup);
+                        //rejectdata();
+                        //var billmarkup = "<div style='width:384px;height:192px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                        //    + "<img style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);float:left;margin-left:-149px;margin-top:-19px;width: 165px;height: 227px;' src ='" + barcodeimage + "'> <br />"
+                        //    + "<div style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);margin-top:-185px;float:left;margin-left: 112px;margin-top: -88px;'>"
+                        //    + "<br> Category: " + categoryname
+                        //    + "<br> Brand: " + brandname
+                        //    + "<br> Size: " + sizename
+                        //    + "<br> Price: " + Math.round(unitprice) + "/-"
+                        //    + "<br>       <small class='text-muted'>(Incl. of all taxes)</small>"
+                        //    + "<br>"
+                        //    + "<br><BRANDEXCL.Modeld>Retailed by:</BRANDEXCL.Modeld>"
+                        //    + "<br><small>The Brand Retails</small>"
+                        //    + "<br><small>KHATA NO.-110,</small>"
+                        //    + "<br><small>DOLAMANDAPSAHI,</small>"
+                        //    + "<br><small>UNIT NO.-07,</small>"
+                        //    + "<br><small>DEOGARH,</small>"
+                        //    + "<br><small>Odisha, 768108</small>"
+                        //    + "<br><small>Email:info@brandexclusive.in</small>"
+                        //    + "<br><small>Phone:+91 98805 37374</small>"
+                        //    + "</div></div><br><br>";
+                        //var billmarkup = "<div style='width:200px;height:115px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                        //    + "<img style='height: 32px;width:122px;' src ='" + barcodeimage + "'>"
+                        //    + "<div><div style='height:10px'></div>"
+                        //    + "<div>" + categoryname + "/" + brandname + "/" + sizename + "</div>"
+                        //    + "<div style='font-weight:BRANDEXCL.Modeld'>MRP: " + Math.round(unitprice) + "/- </div>"
+                        //    + "</div></div><div style='height:1.8px'></div>"
+                        //var billmarkup = "<div class='barcode'><div class='pagebreak'> </div>"
+                        //    + "<img src = '" + barcodeimage + "' />"
+                        //    + "<span class='descr' > " + categoryname + " / " + brandname + " / " + sizename + "</span>"
+                        //    + "<br><span class='descr'>MRP: " + Math.round(unitprice) + "/- </span></div>"
+                        var billmarkup = "<div style='width:200px;height:115px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                            + "<img style='height: 32px;width:122px;' src ='" + barcodeimage + "'>"
+                            + "<div><div style='height:10px'></div>"
+                            + "<div>" + categoryname + "/" + brandname + "/" + sizename + "</div>"
+                            + "<div style='font-weight:BRANDEXCL.Modeld'>MRP: " + Math.round(unitprice) + "/- </div>"
+                            + "</div></div><div style='height:1.8px'></div>"
+                        $("#barcode-label").append(billmarkup);
+                    },
+                    failure: function (response) {
+                        alert(response)
+                    },
+                    error: function (response) {
+                        alert(response)
+                    }
+                });
+        }
+    });
+    //Delete the records
+    $('#tbl_Productrecieve').on('click', '#btnD1', function () {
+
+        if (confirm("Are you sure wants to delete ?.")) {
+            var row = $(this).closest("tr");
+            row.remove();
+        }
+    });
+    //To  clear the input strings
+    function rejectdata() {
+        $("#txt_Barcode").val("");
+        $("#txt_Unitprice").val("");
+        $("#txt_GST").val("");
+        $("#ddl_Category").val("");
+        $("#ddl_Brand").val("");
+        $("#ddl_Size").val("");
+        //$("#txt_Quantity").val("");
+        $("#txt_Productname").val("");
+        $("#txt_Description").val("");
+        $("#txt_Unitprice").val("");
+        $("#txt_Barcode").focus()
+    }
+
+    //submit data
+    $("#btn_Submit").click(function () {
+
+        var products = new Array();
+        var tabledata12 = $('#tbl_Productrecieve tbody');
+        if (confirm("Are you sure you received these products?.")) {
+            tabledata12.find('tr').each(function (i) {
+                var $tds = $(this).find('td'),
+                    purcdate = $tds.eq(2).text(),
+                    barcode = $tds.eq(3).text(),
+                    prodname = $tds.eq(4).text(),
+                    unitprice = $tds.eq(5).text(),
+                    totalprice = $tds.eq(6).text(),
+                    gst = $tds.eq(7).text(),
+                    catid = $tds.eq(9).attr("id"),
+                    brandid = $tds.eq(10).attr("id"),
+                    sizeid = $tds.eq(11).attr("id"),
+                    //qty = $tds.eq(11).text(),
+                    descr = $tds.eq(13).text();
+
+                var Purchase = {
+                    outid: $('#Outid').val(),
+                    outcode: $("#lbl_Outletcode").text(),
+                    purcdate: purcdate,
+                    barcode: barcode,
+                    prodname: prodname,
+                    unitprice: unitprice,
+                    //qty: qty,
+                    totalprice: totalprice,
+                    gst: gst,
+                    catid: catid,
+                    brandid: brandid,
+                    sizeid: sizeid,
+                    descr: descr
+                };
+                products.push(Purchase);
+            });
+        }
+        if (products.length != 0) {
+
+            var inOrUp = "1";
+            var options = {};
+            options.url = "/Outlet/ReceivedProduct/StoreReceivedProducts";
+            options.type = "POST";
+            options.contentType = "application/json; charset=utf-8";
+            options.dataType = "json";
+            options.data = JSON.stringify({
+                products, inOrUp
+            });
+            options.success = function (response) {
+                alert(response);
+                $("#btn_Popup").click();
+                rejectdata();
+                //window.location.reload();
+            };
+            options.error = function (response) {
+                alert(response);
+            };
+            $.ajax(options);
+        }
+        $("#tbl_Productrecieve").find("tr:gt(0)").remove();
+    });
+    //function  gotoview()
+    //{
+    //    window.location.href('/Outlet/ReceivedProduct/ReceivedProductFinalIndex');
+    //}
+    function getDate() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log(today);
+        document.getElementById("txt_Date").value = today;
+    }
+
+
+    window.onload = function () {
+        getDate();
+    };
+    $("#txt_Unitprice").change(function () {
+        if (parseFloat($("#txt_Unitprice").val()) > 900) {
+            $("#txt_GST").val(12);
+        }
+        else {
+            $("#txt_GST").val(5);
+        }
+    });
+    function printDiv() {
+
+        //var divToPrint = document.getElementById('barcode-label');
+
+        ////var newWin = window.open('', 'Print-Window');
+        //window.document.open();
+
+        //window.document.write('<html><head><link href="~/css/print.css" rel="stylesheet" /></head><body onload="window.print()">' + sDivText + '</body></html>');
+
+        //window.document.close();
+        //window.onafterprint = function () {
+        //    window.location.reload(true);
+        //}
+        var w = 600;
+        var h = 400;
+        var l = (window.screen.availWidth - w) / 2;
+        var t = (window.screen.availHeight - h) / 2;
+
+        var sOption = "toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,width=" + w + ",height=" + h + ",left=" + l + ",top=" + t;
+        // Get the HTML content of the div
+        var sDivText = window.document.getElementById('barcode-label').innerHTML;
+        // Open a new window
+        var objWindow = window.open("", "Print", sOption);
+        // Write the div element to the window
+        objWindow.document.write('<html><head><link href="~/css/print.css" rel="stylesheet" /></head><body onload="window.print()">' + sDivText + '</body></html>');
+        objWindow.document.close();
+        // Print the window
+        objWindow.print();
+        // Close the window
+        objWindow.close();
+        $("#barcode-label").empty();
+        $("#btn_Popup").click();
+    }
+</script>
+
+

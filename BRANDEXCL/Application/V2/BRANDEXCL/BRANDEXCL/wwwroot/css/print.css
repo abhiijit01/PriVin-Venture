@@ -1,0 +1,49 @@
+﻿@media print {
+    .pagebreak {
+        clear: both;
+        page-break-after: always;
+        background: #000;
+    }
+}
+/*body {
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper {
+    width: 100%;
+    display: block;
+}
+
+.barcode {
+    width: 189px;
+    height: 113px;
+    padding: .125in .3in 0;
+    margin-right: .125in;
+    text-align: center;
+    overflow: hidden;
+    border: 1px dotted
+}
+
+    .barcode img {
+        display: block;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 10px auto;
+    }*/
+    /* set to whatever the barcodes will be in size */
+    /*.barcode span {
+        display: block;
+        text-align: center;
+        font-weight: BRANDEXCL.Modeld;
+    }
+
+#wrapper div.barcode:nth-child(3n+4) {
+    clear: left;
+}
+
+#wrapper div.barcode:nth-child(6n+6) {
+    page-break-after: always;
+    background: #000;
+}*/
+/* Use 9n+9 to page break after each 9th item. */

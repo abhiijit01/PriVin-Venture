@@ -1,0 +1,317 @@
+﻿
+@{
+    ViewBag.Title = "ExchangeItem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/SaleStyle.css" rel="stylesheet" />
+@* //saleid, outcode, countcode, productcode, itemcode, custmcode, barcode, billno, quanity, price, discountper, discountamount, addiscper, adddiscamount, sgst, cgst, igst, paymentmode, isactive, isdelete, addon, addby, modon, modby*@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 ">
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Exchange Product </div>
+                <div class="col-lg-12 box bb">
+                    <input type="hidden" id="hf_pageid" value="" />
+                    <div class="row hd_titl mtbm" style="border-bottom: 1px solid #e5e5e5;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>Mobile Or Invoice No:</span>
+                                </div>
+                                <div class="col-lg-3 col-sm-12 col-xs-12">
+                                    <input type="text" class="ks" id="txt_Mobileno" />
+                                </div>
+                                <div class="col-lg-1 col-sm-12 col-xs-12">
+                                    <span>InvoiceNo:</span>
+                                </div>
+                                <div class="col-lg-3 col-sm-12 col-xs-12">
+                                    <select id="ddlInvoicenoAndDate" onchange="BindGrid()" class="ks" multiple>
+                                        <option>Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <h2></h2>
+                            <div class="card-box ribbon-box">
+                                <div class="ribbon ribbon-custom">Purchased Products</div>
+                                <div class="col-md-12 box bb">
+                                    <table id="Demogrid"></table>
+                                    <div id="pager"></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btn_Submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-top:15px;">
+    <div class="col-sm-12 col-lg-11 col-xs-12 "></div>
+    <div class="col-sm-12 col-lg-1 col-xs-12">
+        <button type="button" class="btn btn-primary" id="btn_Submit">Submit</button>
+        <button type="button" hidden="hidden" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btn_Popup">Print</button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="invoice-POS" style="box-shadow: 0 0 1in -0.25in rgb(0 0 0 / 50%); padding: 2mm; margin: 0 auto; width: 72mm; background: #FFF;">
+                            @if (Session["outcode"] != null && Session["outcode"].ToString() == "O0001")
+                            {
+                                <center style="border-bottom: 1px solid black;">
+                                    <div><img src="~/Images/tb.png" style=" height: 40px !important; width: 60px !important; background: url(/images/tb.png) no-repeat !important; background-size: 60px 60px !important; float: left;" /></div>
+                                    <div>
+                                        <h2 style="font-weight: bold; font-size: 39px; padding: 4px;">The Brand</h2>
+                                    </div><!--End Info-->
+                                </center><!--End InvoiceTop-->
+                                <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                    <p>Ward No - 10, Dolamandapsahi, Deogarh, Odisha, 768108, Phone No - +919880537374</p>
+                                    <p style="font-weight: bold; font-size: 10px;"> GSTIN NO – <span>21AJNPN2581M2ZU</span></p>
+                                    <p style="font-weight: bold; font-size: 10px;">INVOICE NO - <span id="pntBillno"></span></p>
+                                    <p style="font-weight: bold; font-size: 10px;">INVOICE DATE TIME - <span id="pntDatetime"></span></p>
+                                </div><!--End Invoice Mid-->
+                            }
+                            else
+                            {
+                                <center style="border-bottom: 1px solid black;">
+                                    <div><img src="~/Images/tbd.png" style="height: 106px !important; width: 252px !important; background: url(/images/tbd.png) no-repeat !important; background-size: 60px 60px !important; " /></div>
+                                </center><!--End InvoiceTop-->
+                                <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                    <p>Station Square, Near Sai Temple, Balasore, Odisha, 756001, Phone No - +91988320392</p>
+                                    <p style="font-weight: bold; font-size: 10px;"> GSTIN NO – <span>21AJNPN2581M2ZU</span></p>
+                                    <p style="font-weight: bold; font-size: 10px;">INVOICE NO - <span id="pntBillno"></span></p>
+                                    <p style="font-weight: bold; font-size: 10px;">INVOICE DATE TIME - <span id="pntDatetime"></span></p>
+                                </div><!--End Invoice Mid-->
+                            }
+
+                            <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                <p>Exchange Invoice</p>
+                                <div id="table">
+                                    <table id="tbl_PrintExch">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Qty</th>
+                                                <th>MRP</th>
+                                                <th>Dis(%)</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+                                </div><!--End Table-->
+                                <br />
+                                <br />
+                            </div>
+                            <div style="border-bottom: 3px solid black; margin-top: 7px; ">
+                                <p style="font-size: 10px;"> TOT Items : <span id="pntTotalqty">0</span></p>
+                                <p style="font-size: 10px;"> MRP Value : <span id="pntTotalunitprice">0</span></p>
+                                <p style="font-size: 10px;"> Grand Total : <span id="pntGrandTotal">0</span></p>
+                                <p style="font-size: 10px;"> Payment Mode : <span id="pntPaymode"></span></p>
+                                <p style="font-weight: bold; font-size: 12px;"><span style="font-weight: bold; font-size: 12px;" id="lbl_GrandTotalTextBill"></span></p>
+                                <p style=" font-size: 14px; font-weight: bold;"> You Saved : <span id="pntDiscountedamount">0</span></p>
+                            </div>
+                            <div style="margin-top: 7px; ">
+                                <center>
+                                    <p style="font-weight: bold;">** THANKS FOR SHOPPING **</p>
+                                </center>
+                                <center>
+                                    <p style="font-weight: bold;font-size: 10px;">EXCHANGE WITHIN 7DAYS WITH ORIGINAL MRP TAG, NO CASH REFUND</p>
+                                </center>
+                                <center>
+                                    <p style="font-weight: bold;text-decoration: underline;font-size: 11px;">EXCHANGE POLICY</p>
+                                </center>
+                                <p style="font-size: 10px;word-wrap: break-word;"> In case you are not satisfied with your purchase , you can exchange any merchandise bought from our stores within 7 days from the original date of purchase, provided article(s) being returned for exchange is unused, clean and in their original state and packaging. </p>
+                                <center>
+                                    <p style="font-weight: bold;text-decoration: underline;font-size: 11px;">GENERAL TERMS &amp; CONDITION FOR EXCHANGE</p>
+                                </center>
+                                <p style="font-size: 10px;word-wrap: break-word;">*All Articles being returned will be eligible for exchange only if it is accompanied by a valid Invoice.</p>
+                                <p style="font-size: 10px;word-wrap: break-word;">*No Exchange of articles purchased on discount or on sale period.</p>
+                                <p style="font-size: 10px;word-wrap: break-word;">*No exchange would be entertained without return of the source article to our store</p>
+                            </div>
+                            <!--End InvoiceBot-->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="btn_Print" value="Print" class="btn btn-info btnhide" onclick='printDiv();' />
+                        @*<button type="button" id="btn_Close" class="btn btn-default btnhide" data-dismiss="modal">Close</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+    });
+
+    $("#btn_Close").click(function () {
+        $("#tbl_Print").find("tr:gt(0)").remove();
+    });
+    $("#btn_Print").click(function () {
+        $("#tbl_Print").find("tr:gt(0)").remove();
+        location.reload();
+    });
+    $("#txt_Mobileno").blur(function () {
+        BindInvoicesDDl();
+    });
+    $("#btn_Submit").on('click', function (row, isSelected) {
+        debugger;
+        ExchangeInsert();
+        //location.reload();
+    });
+    function printDiv(divID) {
+        //Get the HTML of div
+        var divElements = document.getElementById(divID).innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+            "<html><head><title></title></head><body>" +
+            divElements + "</body>";
+        //Print Page
+        window.print();
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+
+    }
+    //====================jqgrid============================
+    function BindInvoicesDDl() {
+        var mobinvoice = $("#txt_Mobileno").val();
+        $.ajax({
+            type: "GET",
+            url: "/Outlet/Sale/GetInvoicesByMobileOrInvoice",
+            data: { invoice: mobinvoice, mobileno: mobinvoice },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    var mark = "<option value='" + response[i].billno + "'>" + response[i].billno + "-" + response[i].addon + "</option>";
+                    $("#ddlInvoicenoAndDate").append(mark);
+                }
+            },
+            failure: function (response) {
+                alert(response);
+            },
+            error: function (response) {
+                alert(response);
+            }
+        });
+    }
+    function BindGrid() {
+        debugger;
+        var billno = $("#ddlInvoicenoAndDate").val();
+        billno = billno.join(", ");
+        $("#Demogrid").jqGrid('GridUnload');
+        $("#Demogrid").jqGrid
+            ({
+                url: "/Outlet/Sale/GetAllSaleByInvoiceno",
+                datatype: 'json',
+                mtype: 'Get',
+                postData: { invoices: billno },
+                colNames: ['sale Id', 'MobileNo', 'Product', 'Invoice No', 'Invoice Date', 'Quantity', 'Final Price'],
+                colModel: [
+                    { name: "saleid", key: true, index: 'saleid', hidden: true, editoptions: { readonly: "readonly" }, search: false },
+                    { name: "mobile", key: false, index: 'mobile', editoptions: { readonly: "readonly" }, search: false },
+                    { name: "prodname", key: false, index: 'prodname', editoptions: { readonly: "readonly" }, search: false },
+                    { name: "billno", key: false, index: 'billno', editoptions: { readonly: "readonly" }, search: false },
+                    { name: 'addon', key: false, index: 'addon', editoptions: { readonly: "readonly" }, search: false },
+                    { name: "quanity", index: 'quanity', key: false, editoptions: { readonly: "readonly" }, search: false },
+                    { name: "finalprice", index: 'finalprice', key: false, editoptions: { readonly: "readonly" }, search: false },
+                ],
+                pager: jQuery('#pager'),
+                rowNum: 10,
+                rowList: [10, 20, 30, 40, 50],
+                height: '100%',
+                width: '100%',
+                viewrecords: true,
+                caption: 'PageRecords Records',
+                emptyrecords: 'No Sales Records are Available to Display',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false
+                },
+                autowidth: true,
+                multiselect: true,
+
+            });
+        // GetCustmobilenoByInvoiceno();
+
+    }
+    function ExchangeInsert() {
+        debugger;
+        var myGrid = $('#Demogrid');
+        var rows = myGrid.jqGrid('getGridParam', 'selarrrow');
+        var exchdataas = new Array();
+        var totalAmount = 0;
+        $.each(rows, function () {
+            debugger;
+            var rowData = $("#Demogrid").getRowData(this);
+            totalAmount += rowData["finalprice"] * 1;
+            var exchdata =
+            {
+                saleid: rowData.saleid,
+            };
+            exchdataas.push(exchdata);
+        });
+        if (exchdataas.length != 0) {
+            var options = {};
+            options.url = "/Outlet/Sale/SaveExchangeDetails";
+            options.type = "POST";
+            options.data = JSON.stringify(exchdataas);
+            options.contentType = "application/json; charset=utf-8";
+            options.dataType = "json";
+            options.success = function (response) {
+                GetInvoicenoAfterInsert(response);
+            };
+            options.error = function (response) {
+                alert(response);
+            };
+        }
+        else {
+            alert("Please Check the Data row you want to Submit");
+        }
+    }
+    function GetInvoicenoAfterInsert(invoice) {
+        $.ajax({
+            type: "GET",
+            url: "/Outlet/Sale/latestexchbiinoselectproduct",
+            data: { invoice: invoice },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                for (var i = 0; i < response.length; i++) {
+                    var mark = "<tr style='text-align:center;'>" +
+                        "<td>" + response[i].prodname + "(" + response[i].sizename + ")</td>" +
+                        "<td>" + response[i].quanity + "</td>" +
+                        "<td>" + response[i].unitprice + "</td>" +
+                        "<td>" + response[i].discountper + "</td>" +
+                        "<td>" + response[i].finalprice + "</td>" +
+                        "</tr>"
+                    $("#tbl_PrintExch tbody").append(mark);
+                }
+                $("#btn_Popup").click();
+            },
+            failure: function (response) {
+                alert(response);
+            },
+            error: function (response) {
+                alert(response);
+            }
+        });
+    }
+</script>

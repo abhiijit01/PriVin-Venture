@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "GeneratePriceTag";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    input[type=text], select {
+        max-width: 100% !important;
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=button] {
+        background-color: #59a294;
+        color: white;
+        padding: 6px 9px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #45a049;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Generate Price Tag</div>
+                <div class="row">
+                    <div class="col-sm-12" style="padding-bottom:20px">
+                        <div class="col-sm-2">
+                            <span>Download Template  :</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <a href="~/ExcelFiles/Price Tag Template.xlsx" download><i class="fa fa-file-excel-o" style="font-size:48px;color:red"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="padding-bottom:20px">
+                        <div class="col-sm-2">
+                            <span>Select File  :</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <input class="form-control" type="file" name="importFile" id="importFile" />
+                        </div>
+                        <div class="col-sm-3">
+                            <input class="btn btn-primary" id="btnUpload" type="button" value="Upload" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-top:15px;">
+    <div class="col-sm-12 col-lg-11 col-xs-12 "></div>
+    <div class="col-sm-12 col-lg-1 col-xs-12">
+        <button type="button" hidden="hidden" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="btn_Popup">Print</button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="barcode-label">
+                            @*<div class="label">
+                                        <img src="" height="74" width="74">
+                                        <br> Fred Smith
+                                        <br> Date of Birth: 04/03/2000
+                                        <br> Year: 2015
+                                        <br> League: Recreation
+                                        <br> Id: 343535
+                                        <br>
+                                    </div>
+                                <div class="page-break"></div>*@
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" id="btn_Print" value="Print" class="btn btn-info btnhide" onclick='printDiv();' />
+                        @*<button type="button" id="btn_Close" class="btn btn-default btnhide" data-dismiss="modal">Close</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+    });
+    $(document).on("click", "#btnUpload", function () {
+        var files = $("#importFile").get(0).files;
+        var formData = new FormData();
+        formData.append('importFile', files[0]);
+        $.ajax({
+            url: '/Inventory/PriceTag/ImportFile',
+            data: formData,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.length> 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].Brand == "Arrow") {
+                            var billmarkup = "<div style='width:384px;height:192px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                                + "<img style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);float:left;margin-left:-149px;margin-top:-19px;width: 165px;height: 227px;' src ='" + data[i].BarcodeImage + "'> <br />"
+                                + "<div style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);margin-top:-185px;float:left;margin-left: 112px;margin-top: -88px;'>"
+                                + "<br> Category: " + data[i].Product
+                                + "<br> Brand: " + data[i].Brand
+                                + "<br> Size: " + data[i].ChestSize
+                                + "<br> Price: " + Math.round(data[i].MRP) + "/-"
+                                + "<br>       <small class='text-muted'>(Incl. of all taxes)</small>"
+                                + "<br>"
+                                + "<br><bold>Retailed by:</bold>"
+                                + "<br><small>The Brand Retails</small>"
+                                + "<br><small>KHATA NO.-110,</small>"
+                                + "<br><small>DOLAMANDAPSAHI,</small>"
+                                + "<br><small>UNIT NO.-07,</small>"
+                                + "<br><small>DEOGARH,</small>"
+                                + "<br><small>Odisha, 768108</small>"
+                                + "<br><small>Email:info@brandexclusive.in</small>"
+                                + "<br><small>Phone:+91 98805 37374</small>"
+                                + "</div></div><br><br>";
+                            $("#barcode-label").append(billmarkup);
+                        }
+                        else if (data[i].Brand == "Flying Machine") {
+                            var billmarkup = "<div style='width:384px;height:192px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                                + "<img style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);float:left;margin-left:-149px;margin-top:-19px;width: 165px;height: 227px;' src ='" + data[i].BarcodeImage + "'> <br />"
+                                + "<div style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);margin-top:-185px;float:left;margin-left: 112px;margin-top: -88px;'>"
+                                + "<br> Category: " + data[i].Product
+                                + "<br> Brand: " + data[i].Brand
+                                + "<br> Size: " + data[i].ChestSize
+                                + "<br> Price: " + Math.round(data[i].MRP) + "/-"
+                                + "<br>       <small class='text-muted'>(Incl. of all taxes)</small>"
+                                + "<br>"
+                                + "<br><bold>Retailed by:</bold>"
+                                + "<br><small>The Brand Retails</small>"
+                                + "<br><small>KHATA NO.-110,</small>"
+                                + "<br><small>DOLAMANDAPSAHI,</small>"
+                                + "<br><small>UNIT NO.-07,</small>"
+                                + "<br><small>DEOGARH,</small>"
+                                + "<br><small>Odisha, 768108</small>"
+                                + "<br><small>Email:info@brandexclusive.in</small>"
+                                + "<br><small>Phone:+91 98805 37374</small>"
+                                + "</div></div><br><br>";
+                            $("#barcode-label").append(billmarkup);
+                        }
+                        else if (data[i].Brand == "Cult Sport") {
+                            var billmarkup = "<div style='width:384px;height:192px;padding:.125in .3in 0;margin-right:.125in;text-align:center;overflow:hidden;'>"
+                                + "<img style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);float:left;margin-left:-149px;margin-top:-19px;width: 165px;height: 227px;' src ='" + data[i].BarcodeImage + "'> <br />"
+                                + "<div style='-webkit-transform:rotate(-90deg);-moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg);-o-transform: rotate(-90deg); transform: rotate(-90deg);margin-top:-185px;float:left;margin-left: 112px;margin-top: -88px;'>"
+                                + "<br> Category: " + data[i].Product
+                                + "<br> Brand: " + data[i].Brand
+                                + "<br> Size: " + data[i].Size
+                                + "<br> Price: " + Math.round(data[i].MRP) + "/-"
+                                + "<br>       <small class='text-muted'>(Incl. of all taxes)</small>"
+                                + "<br>"
+                                + "<br><bold>Retailed by:</bold>"
+                                + "<br><small>The Brand Retails</small>"
+                                + "<br><small>KHATA NO.-110,</small>"
+                                + "<br><small>DOLAMANDAPSAHI,</small>"
+                                + "<br><small>UNIT NO.-07,</small>"
+                                + "<br><small>DEOGARH,</small>"
+                                + "<br><small>Odisha, 768108</small>"
+                                + "<br><small>Email:info@brandexclusive.in</small>"
+                                + "<br><small>Phone:+91 98805 37374</small>"
+                                + "</div></div><br><br>";
+                            $("#barcode-label").append(billmarkup);
+                        }
+                        else {
+
+                        }
+                    }
+                    $("#btn_Popup").click();
+                } else {
+                    alert("Failed to Import");
+                }
+            }
+        });
+    });
+</script>
+
+

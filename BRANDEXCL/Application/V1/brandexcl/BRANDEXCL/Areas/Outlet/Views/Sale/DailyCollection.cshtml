@@ -1,0 +1,418 @@
+﻿
+@{
+    ViewBag.Title = "DailyCollection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .container-body {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .container-white {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .container-yellow {
+        background-color: #284c720a;
+        box-shadow: -1px 1px 4px #aaaaaa;
+        padding: 15px;
+        margin-bottom: 22px;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .mtbm {
+        margin-bottom: 20px;
+        /*border-bottom: 1px dashed #ccc;*/
+        background-color: #f7e8e9;
+        padding: 8px;
+    }
+
+    .container-fluid {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 3px;
+    }
+
+    .ks {
+        max-width: 100% !important;
+        width: 100%;
+        padding: 4px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btnn {
+        color: white;
+        padding: 6px 9px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #45a049;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    #example_filter {
+        float: right;
+    }
+
+    #example_paginate {
+        float: right;
+    }
+
+    label {
+        display: inline-flex;
+        margin-bottom: .5rem;
+        margin-top: .5rem;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-12 ">
+            <input type="hidden" id="Outid" value="" />
+            <input type="hidden" id="Countid" value="" />
+            <input type="hidden" id="countcode" value="" />
+
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Daily Collection Reports</div>
+                <div class="col-lg-12 box bb">
+                    <input type="hidden" id="hf_pageid" value="" />
+                    <div class="row hd_titl mtbm" style="border-bottom: 1px solid #e5e5e5;">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-12 col-xs-12">
+                                    <span>Store Name:</span>
+                                    <span id="lbl_Outletname" style="color:deeppink;"></span>
+                                </div>
+                                <div class="col-lg-6 col-sm-12 col-xs-12"></div>
+                                <div class="col-lg-2 col-sm-12 col-xs-12">
+                                    <span>Code:</span>
+                                    <span id="lbl_Outletcode" style="color:deeppink"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-white">
+                    <div class="col-lg-12 col-xs-12 col-sm-12 formbox">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12 col-xs-12">
+                                <span>Choose Date:</span>
+                                <input type="date" id="txt_Date" class="ks" />
+                            </div>
+                       
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-11 col-sm-12 col-xs-12"></div>
+                    <div class="col-lg-1 col-sm-12 col-xs-12">
+                        <button type="button" class="btn btn-primary" id="btn_Submit" data-toggle="modal" data-target="#myModal">Submit</button>
+                    </div>
+                </div>
+                <label id="lbl_msg"></label>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                        <table id="Demogrid"></table>
+                        <div id="pager"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        getOutcodeByLoggedInUser();
+        $("#btn_Submit").click(function () {
+            DailyCollectionReportByDate();
+        });
+    });
+    function getOutcodeByLoggedInUser() {
+        
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Outlet/OutletSelectByUserId",
+            data: '{}',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Outid').val(response[0].outid);
+                $("#lbl_Outletname").text(response[0].outletname);
+                $("#lbl_Outletcode").text(response[0].outcode)
+            },
+            failure: function (response) {
+                alert(response);
+            },
+            error: function (response) {
+                alert(response);
+            }
+        });
+    }
+    function DailyCollectionReportByDate() {
+        
+        var Date = $("#txt_Date").val();
+        var date = {
+            date: Date
+        }
+        $("#Demogrid").jqGrid('GridUnload');
+        $("#Demogrid").jqGrid
+        ({
+            url: "/Outlet/Sale/DailyCollectionReportByDate",
+            datatype: 'json',
+            mtype: 'Get',
+            postData: { date: Date },
+            //table header name
+            colNames: ['Product Description', 'Barcode', 'Product Code', 'Unit Price', 'Total Quantity', 'Total Unit Price','Sale Date','GST(%)','Total Gst Amount','Payment Mode' ],
+            colModel: [
+            { name: "proddesc", editable: true, editrules: { required: true }, index: 'proddesc', key: false },
+            { name: "barcode", editable: true, editrules: { required: true }, index: 'barcode', key: false },
+            { name: "productcode", editable: true, editrules: { required: true }, index: 'productcode', key: false },
+            { name: "unitprice", editable: true, editrules: { required: true }, index: 'unitprice', key: false },
+            { name: "quanity", editable: true, editrules: { required: true }, index: 'quanity', key: false },
+            { name: "TotalUnitPrice", editable: true, editrules: { required: true }, index: 'TotalUnitPrice', key: false },
+
+                                  {
+                                      name: 'saledate', index: 'saledate', width: 90, editable: true, editoptions: {
+                                          size: 20,
+                                          dataInit: function (el) {
+                                              $(el).datepicker({ dateFormat: 'yy-mm-dd' });
+                                          },
+
+                                      },
+                                      formatter: "date", formatoptions: { newformat: "Y-m-d" }
+                                  },
+             { name: "igst", index: 'igst', key: false },
+             { name: "igstprice", index: 'igstprice', key: false },
+             { name: "paymentmode", index: 'paymentmode', key: false }
+            ],
+
+            rowNum: 10,
+            viewrecords: true,
+            sortorder: 'desc',
+            caption: 'Product Information',
+            emptyrecords: 'No records',
+            jsonReader:
+            {
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records",
+                repeatitems: false,
+                Id: "0"
+            },
+            autowidth: true,
+            multiselectPosition: "none",
+            multiselect: false,
+            pager: jQuery('#pager'),
+            rowList: [10, 20, 30, 40],
+        }).navGrid('#pager',
+        {
+            edit: false,
+            add: false,
+            del: false,
+            search: true,
+            searchtext: "Search",
+            refresh: true,
+            refreshtext: "Refresh",
+
+        },
+
+
+        //Search option
+        {
+            zIndex: 100,
+            caption: "Search Refund Details",
+            sopt: ['cn'],
+            closeAfterSearch: true,
+            searchtext: "Search Refund Details"
+        });
+
+
+    var dtaalength = $(".navtable tbody").find('td:eq(3)').attr("title");
+
+    if (dtaalength == undefined) {
+
+        $("#Demogrid").jqGrid('navButtonAdd', '#pager',
+        {
+
+            caption: "ExportExcel", buttonicon: "ui-icon ui-icon-document", title: "Export to Excel",
+            onClickButton: function (e) {
+                exportDataToExcel(e, '#Demogrid');
+            },
+            position: "3"
+        });
+
+    }
+
+
+    function exportDataToExcel(e, id) {
+        
+        var gridid = jQuery(id).getDataIDs();
+        var label = jQuery(id).getRowData(gridid[0]);
+        var selRowIds = jQuery(id).jqGrid('getRowData');
+
+        var obj = new Object();
+        obj.count = selRowIds.length;
+
+        if (obj.count) {
+            obj.items = new Array();
+            for (elem in selRowIds) {
+                obj.items.push(jQuery(id).getRowData(gridid[elem]));
+            }
+            var json = JSON.stringify(obj);
+            JSONToCSVConvertor(json, "csv", 1);
+        }
+    }
+    function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
+
+        //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
+        var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+        var CSV = '';
+        //This condition will generate the Label/Header
+        if (ShowLabel) {
+            var row = "";
+
+            //This loop will extract the label from 1st index of on array
+            for (var index in arrData.items[0]) {
+                //Now convert each value to string and comma-seprated
+                row += index + ',';
+            }
+            row = row.slice(0, -1);
+            //append Label row with line break
+            CSV += row + '\r\n';
+        }
+
+        //1st loop is to extract each row
+        for (var i = 0; i < arrData.items.length; i++) {
+            var row = "";
+            //2nd loop will extract each column and convert it in string comma-seprated
+            for (var index in arrData.items[i]) {
+                row += '"' + arrData.items[i][index].replace(/(<([^>]+)>)/ig, '') + '",';
+            }
+            row.slice(0, row.length - 1);
+            //add a line break after each row
+            CSV += row + '\r\n';
+        }
+
+        if (CSV == '') {
+            alert("Invalid data");
+            return;
+        }
+
+        var link = document.createElement("a");
+        link.id = "lnkDwnldLnk";
+
+        //this part will append the anchor tag and remove it after automatic click
+        document.body.appendChild(link);
+
+        var csv = CSV;
+        blob = new Blob([csv], { type: 'text/csv' });
+
+        var myURL = window.URL || window.webkitURL;
+
+        var csvUrl = myURL.createObjectURL(blob);
+        var filename = 'ReportDailyCollection.csv';
+        jQuery("#lnkDwnldLnk")
+        .attr({
+            'download': filename,
+            'href': csvUrl
+        });
+
+        jQuery('#lnkDwnldLnk')[0].click();
+        document.body.removeChild(link);
+
+    }
+
+}
+    function getAllOutlets() {
+        
+        var OutletList = ":Select;";
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Outlet/ViewOutletDDL",
+            dataType: "JSON",
+            async: false,
+            data: '',
+            contentType: "application/json; charset=utf-8",
+            success: function (msg) {
+                if (msg != undefined && msg.length > 0) {
+                    for (var i = 0; i < msg.length; i++) {
+                        if (i == msg.length - 1) {
+                            OutletList += "" + msg[i].outid + ":" + msg[i].outnm + "";
+                        }
+                        else {
+                            OutletList += "" + msg[i].outid + ":" + msg[i].outnm + ";";
+                        }
+                    }
+                }
+            },
+            error: function (response) {
+            }
+        });
+        return OutletList;
+    }
+    function getAllCounters() {
+        
+        var CounterList = ":Select;";
+        $.ajax({
+            type: "POST",
+            url: "/Admin/Counter/ViewCounterDDL",
+            dataType: "JSON",
+            async: false,
+            data: '',
+            contentType: "application/json; charset=utf-8",
+            success: function (msg) {
+                if (msg != undefined && msg.length > 0) {
+                    for (var i = 0; i < msg.length; i++) {
+                        if (i == msg.length - 1) {
+                            CounterList += "" + msg[i].countid + ":" + msg[i].countnm + "";
+                        }
+                        else {
+                            CounterList += "" + msg[i].countid + ":" + msg[i].countnm + ";";
+                        }
+                    }
+                }
+            },
+            error: function (response) {
+            }
+        });
+        return CounterList;
+    }
+</script>
+
+
+
+

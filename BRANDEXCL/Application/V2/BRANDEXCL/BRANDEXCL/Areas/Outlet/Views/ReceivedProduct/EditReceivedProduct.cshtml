@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "EditReceivedProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Edit Stocks</div>
+                <div class="col-md-12 box bb">
+                    <table id="Demogrid"></table>
+                    <div id="pager"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        
+        "use strict";
+        $("#Demogrid").jqGrid
+            ({
+                url: "/Outlet/ReceivedProduct/GetAllReceivedProducts",
+                datatype: 'json',
+                mtype: 'Get',
+                //table header name
+                colNames: ['Purch Id','Item Name', 'Product Description','Size', 'Barcode', 'Date', 'Price Excluding GST', 'GST', 'Unit Price', ' Quantity', 'Quantity Sold', 'AvailableQuantity','Purchase Price'],
+                colModel: [
+                    { name: "purchid", editable: true, key: true, index: 'purchid', hidden: true, editoptions: { readonly: "readonly" }, search: false },
+                    { name: "prodname", index: 'prodname', key: false, search: true, editable: true, editrules: { custom: true, custom_func: prodnameCheck, required: true }},
+                    { name: "descr", index: 'descr', key: false, search: true, editable: true },
+                    { name: "sizename", index: 'sizename', key: false, search: true, editable: true },
+                    { name: "barcode", index: 'barcode', key: false, search: true},
+                    {
+                        name: 'purcdate', index: 'purcdate', width: 90, editoptions: {
+                            size: 20,
+                            dataInit: function (el) {
+                                $(el).datepicker({ dateFormat: 'yy-mm-dd' });
+                            },
+
+                        },
+                        formatter: "date", formatoptions: { newformat: "Y-m-d" }
+                    },
+                    { name: "priceexgst", search: false },
+                    { name: "gst", search: false },
+                    { name: "unitprice", search: false, editable: true, editrules: { custom: true, custom_func: unitpriceCheck, required: true }},
+                    { name: "qty", search: false, editable: true, editrules: { custom: true, custom_func: qtyCheck, required: true }},
+                    { name: "qtysold", search: false },
+                    { name: "qtyavailable", search: false },
+                    { name: "purchprice", search: false, editable: true},
+                ],
+
+                rowNum: 10,
+                viewrecords: true,
+                sortorder: 'desc',
+                caption: 'Stocks Information',
+                emptyrecords: 'No records',
+                jsonReader:
+                {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    Id: "0"
+                },
+                autowidth: true,
+                multiselect: true,
+                pager: jQuery('#pager'),
+                rowList: [10, 20, 30, 40],
+                multiselectPosition: false
+            }).navGrid('#pager',
+                {
+                    add: false,
+                    edit: true,
+                    del: true,
+                    search: true,
+                    searchtext: "Search",
+                    refresh: true,
+                    refreshtext: "Refresh"
+                },
+                {
+                    // edit option
+                    zIndex: 100,
+                    type: 'Post',
+                    editCaption: "Edit Product",
+                    url: '/Outlet/ReceivedProduct/UpdateReceivedProduct',
+                    closeOnEscape: true,
+                    closeAfterEdit: true,
+                    recreateForm: true,
+                    //afterShowForm: populatemats,
+                    afterComplete: function (response) {
+                        if (response.responseText) {
+                            alert(response.responseText);
+                        }
+                    }
+                },
+                {
+                    // delete option
+                    zIndex: 100,
+                    type: 'Post',
+                    url: "/Outlet/ReceivedProduct/DeleteReceivedProduct",
+                    closeOnEscape: true,
+                    closeAfterDelete: true,
+                    recreateForm: true,
+                    msg: "Are you sure you want to delete this Product Details?",
+                    afterComplete: function (response) {
+                        if (response.responseText) {
+                            alert(response.responseText);
+                        }
+                    }
+                },
+                //Search option
+                {
+                    zIndex: 100,
+                    caption: "Search Product",
+                    sopt: ['cn'],
+                    closeOnEscape: true,
+                    closeAfterDelete: true,
+                    searchtext: "Search Product"
+                });
+    });
+    //validations
+    var prodnameCheck = function (value, prodname) {
+        if (/^[a-zA-Z ]*$/.test(value)) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + prodname + "' column."]
+        }
+    };
+    var unitpriceCheck = function (value, unitprice) {
+        if (value != 0) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + unitprice + "' column."]
+        }
+    };
+    var qtyCheck = function (value, qty) {
+        if (value != 0) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + qty + "' column."]
+        }
+    };
+    //$(document).ready(function () {
+    //   $("#row_with_row_id","#mygrid").css({display:"none"});
+    //});
+</script>
+
+
+
+

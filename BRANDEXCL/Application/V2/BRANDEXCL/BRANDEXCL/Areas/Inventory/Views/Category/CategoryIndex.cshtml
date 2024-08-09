@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "CategoryIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Index Category</div>
+                <div class="col-md-12 box bb">
+                    <table id="Demogrid"></table>
+                    <div id="pager"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        
+        $("#Demogrid").jqGrid
+            ({
+                url: "/Inventory/Category/ViewCategory",
+                datatype: 'json',
+                mtype: 'GET',
+                //table header name
+                colNames: ['Category Id', 'Category Name'],
+                //colModel takes the data from controller and binds to grid
+                colModel: [
+                    { name: "catid", editable: true, key: true, index: 'catid', hidden: true, editoptions: { readonly: "readonly" }, search: false },
+                    { name: "catname", editable: true, editrules: { custom: true, custom_func: catnameCheck, required: true }, index: 'catname', key: false }
+                ],
+
+                rowNum: 10,
+                viewrecords: true,
+                sortorder: 'desc',
+                caption: 'Category Information',
+                emptyrecords: 'No records',
+                jsonReader:
+                {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    Id: "0"
+                },
+                autowidth: true,
+                multiselect: true,
+                pager: jQuery('#pager'),
+                rowList: [10, 20, 30, 40],
+            }).navGrid('#pager',
+                {
+                    edit: true,
+                    add: true,
+                    del: true,
+                    search: true,
+                    refresh: true
+
+                },
+
+                {
+                    // edit option
+                    zIndex: 100,
+                    type: 'Post',
+                    editCaption: "Edit Category",
+                    url: '/Inventory/Category/UpdateCategory',
+                    closeOnEscape: true,
+                    closeAfterEdit: true,
+                    recreateForm: true, 
+                    afterComplete: function (response) {
+                        if (response.responseText) {
+                            alert(response.responseText);
+                        }
+                    }
+                },
+                {
+                    // add option
+
+                    zIndex: 100,
+                    type: 'Post',
+                    url: "/Inventory/Category/InsertCategory",
+                    editCaption: "Create Category",
+                    closeOnEscape: true,
+                    closeAfterAdd: true,
+                    afterComplete: function (response) {
+                        if (response.responseText) {
+                            alert(response.responseText);
+                        }
+                        else {
+                            alert(response.responseText);
+                        }
+                    }
+                },
+                {
+                    // delete option
+                    zIndex: 100,
+                    type: 'Post',
+                    url: "/Inventory/Category/DeleteCategory",
+                    closeOnEscape: true,
+                    closeAfterDelete: true,
+                    recreateForm: true,
+                    msg: "Are you sure you want to delete this Category Details?",
+                    afterComplete: function (response) {
+                        if (response.responseText) {
+                            alert(response.responseText);
+                        }
+                    }
+                },
+                //Search option
+                {
+                    zIndex: 100,
+                    caption: "Search Category",
+                    sopt: ['cn'],
+                    closeAfterSearch: true,
+                    searchtext: "Search Category"
+                });
+        });
+    //validation for Dept code input field
+    var catnameCheck = function (value, catname) {
+        if (/^[a-zA-Z ]*$/.test(value)) {
+            return [true];
+        } else {
+            return [false, "Incorrect input for the '" + catname + "' column."]
+        }
+    };
+</script>
+
+
+
+

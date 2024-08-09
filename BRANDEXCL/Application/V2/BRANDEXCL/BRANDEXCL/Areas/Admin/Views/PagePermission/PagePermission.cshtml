@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewBag.Title = "Manage PagePermission";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    input[type=text], select {
+        max-width: 100% !important;
+        width:100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=button] {
+        background-color: #59a294;
+        color: white;
+        padding: 6px 9px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+       
+    }
+
+    input[type=submit]:hover {
+        background-color: #45a049;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2></h2>
+            <div class="card-box ribbon-box">
+                <div class="ribbon ribbon-custom">Permission</div>
+                <div class="col-md-12 box bb">
+                    
+                    <label for="country"> Role Name:</label>
+                    <input type="hidden" id="pageid" value="" /><br />
+                    <select id="ddlRole" class="ddldefault" onchange="getPermissionList()"></select>    
+
+                    <table id="jqGrid"></table>
+                    <div id="jqControls"></div>  
+                    <input type="button" id="btn_submit" value="submit" />
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+ 
+    $(document).ready(function () {
+        $(function () {
+            
+            var ddlrole = $("#ddlRole");
+            $.ajax({
+                type: "POST",
+                url: "/Admin/UserRole/ViewRoleDDL",
+                data: '{}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    ddlrole.empty().append('<option selected="selected" value="0">--Select--</option>');
+                    $.each(response, function () {
+                        ddlrole.append($("<option></option>").val(this['RoleID']).html(this['RoleDesc']));
+                    });
+                },
+                failure: function (response) {
+                    alert(response);
+                },
+                error: function (response) {
+                    alert(response);
+                }
+            });
+        });
+       
+    });
+
+    function getPermissionList() {
+        
+        var RoleID = $("#ddlRole").val();
+        $("#jqGrid").jqGrid('GridUnload');
+        $("#jqGrid").jqGrid({
+            url: "/Admin/PagePermission/BindGrid",
+            datatype: 'json',
+            mtype: 'Get',
+            postData: { RoleID: RoleID },
+            colNames: [ 'page Id','Page Name', 'canadd', 'canedit', 'candelete', 'canview'],
+            colModel: [            
+             { name: 'pageid', index: 'pageid', editable: false, editrules: { required: true } },
+             { key: false, name: 'distext', index: 'distext', editable: false },
+             { key: false, name: 'canadd', Index: 'canadd', editable: true, edittype: "checkbox", editoptions: { value: "true:false" }, formatter: "checkbox", formatoptions: { disabled: false } },
+             { key: false, name: 'canedit', index: 'canedit', editable: true, edittype: 'checkbox', editoptions: { value: "true:false" }, formatter: "checkbox", formatoptions: { disabled: false } },
+             { key: false, name: 'candelete', index: 'candelete', editable: true, edittype: 'checkbox', editoptions: { value: "true:false" }, formatter: "checkbox", formatoptions: { disabled: false } },
+             { key: false, name: 'canview', index: 'canview', editable: true, edittype: 'checkbox', editoptions: { value: "true:false" }, formatter: "checkbox", formatoptions: { disabled: false } }
+            ],
+            pager: jQuery('#jqControls'),
+            rowNum: 10,
+            rowList: [10, 20, 30, 40, 50],
+            height: '100%',
+            width: '100%',
+            viewrecords: true,
+            caption: 'PageRecords Records',            
+            emptyrecords: 'No Permission Records are Available to Display',
+            jsonReader: {
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records",
+                repeatitems: false
+            },
+            autowidth: true,
+            multiselect: true,
+            
+        });
+
+    }
+   
+    
+    $("#btn_submit").on('click', function (row, isSelected) {
+        
+        var RoleID = $("#ddlRole").val();
+        var myGrid = $('#jqGrid');
+        var rows = myGrid.jqGrid('getGridParam', 'selarrrow');
+
+        var totalRow = rows.length;
+        var totalAmount = 0;
+        var pagedataas = new Array();
+        $.each(rows, function () {
+            
+            var rowData = $("#jqGrid").getRowData(this);
+            totalAmount += rowData["amount"] * 1;
+            var pagedatas =
+            {
+                roleid: RoleID,
+                pageid: rowData.pageid,
+                canadd: rowData.canadd,
+                canedit: rowData.canedit,
+                candelete: rowData.candelete,
+                canview: rowData.canview,
+            };
+            pagedataas.push(pagedatas);
+        });
+       
+        if (pagedataas.length != 0) {
+            if (confirm("Are you sure wants to Submit ?")) {
+
+                var options = {};
+                options.url = "/Admin/PagePermission/SavePage";
+                options.type = "POST";
+                options.data = JSON.stringify(pagedataas);
+                options.contentType = "application/json; charset=utf-8";
+                options.dataType = "json";
+                options.success = function (response) {
+                    alert(response)
+                    
+                };
+                options.error = function (response) {
+                    alert(response);
+                };
+                $.ajax(options);
+            }
+        }
+        else {
+            alert("Please Check the Data row you want to Submit");
+        }
+    })
+</script>

@@ -1,0 +1,14 @@
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\MAILER.exe.config
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\MAILER.exe
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\MAILER.pdb
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\Newtonsoft.Json.dll
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.csproj.SuggestedBindingRedirects.cache
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.csproj.CoreCompileInputs.cache
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.csproj.CopyComplete
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.exe
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.pdb
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\MAILER.exe.manifest
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\bin\Debug\MAILER.application
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.exe.manifest
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.application
+F:\My Projects\PriVin-Venture\BRANDEXCL\Application\V1\brandexcl\MAILER\obj\Debug\MAILER.csproj.AssemblyReference.cache

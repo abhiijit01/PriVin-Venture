@@ -1,0 +1,57 @@
+﻿@model BRANDEXCL.Model.QueryBuilderModel
+@{
+    ViewBag.Title = "QueryExecuter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="custom-tab">
+    <!-- /#tab section -->
+    <a href="javascript:void(0);" class="tabslide-btn"><i class="fa fa-angle-down"></i></a>
+    @*<ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" asp-controller="QueryBuilder" asp-action="QueryBuilder">Query Builder</a> </li>
+        </ul>*@
+    <!-- /#tab section end -->
+    <!-- /#util section -->
+    @*<partial name="_UtilPartial" />*@
+    <!-- /#util section end -->
+
+    <div class="clearfix"></div>
+</div>
+<div class="page-container">
+    <div style="width:80%;margin-left:20px;" align="center">
+
+        @using (Html.BeginForm("QueryExecuter", "login", FormMethod.Post))
+        {
+            <div class="form-group row">
+                <div class="col-sm-2">
+                    <label>Password:</label>
+                </div>
+
+                <div class="col-sm-3">
+                    @Html.PasswordFor(model => model.DMLCode, new { @Value = @ViewBag.DMLCode, autocomplete = "off", @class = "form-control", maxlength = "6" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-2">
+                    <label>Enter your query:</label>
+                </div>
+                <div class="col-sm-12">
+                    @Html.TextAreaFor(model => model.QueryText, new { @Value = @ViewBag.QueryText, autocomplete = "off", @placeholder = "Enter your query here", @class = "form-control QueryTextbox", style = "height:200px;" })
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <input type="submit" value="Execute" class="btn btn-secondary" name="Command" id="btn1" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-12" align="center">
+                    <h5 class="text-success"><b>@ViewBag.showmessage</b></h5>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+
